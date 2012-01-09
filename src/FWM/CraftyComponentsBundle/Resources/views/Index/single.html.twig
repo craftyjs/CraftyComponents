@@ -1,0 +1,29 @@
+{% extends "::base.html.twig" %}
+
+{% block content %}
+<div class="content single-component-view">
+	<div class="page-header">
+		<div class="row">
+		  <div class="span9">
+		    <h1>New Components</h1>
+		  </div>
+		  <div class="span5 text-center">
+		    <a href="{{ path('fwm_crafty_components_add_new') }}" class="btn large primary">Submit new component</a>
+		  </div>
+		</div>
+	</div>
+	<div class="row">
+	  <div class="span16">
+
+        {% include 'FWMCraftyComponentsBundle:Index:singleFullComponent.html.twig' with {'component': component} %}
+
+	  </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+	SyntaxHighlighter.all()
+</script>
+{% endblock %}

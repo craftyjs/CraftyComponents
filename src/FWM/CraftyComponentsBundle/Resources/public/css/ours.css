@@ -1,0 +1,15 @@
+.text-center {text-align: center;}
+.container .submit-component {
+	text-align: center;
+	padding-top: 73px;
+}
+
+pre.print{
+	background-color: #FEFBF3;
+	padding: 15px;
+}
+
+.container > footer p {text-align: left;}
+
+
+.container .single-component-view .component-data{margin-right: 20px;}

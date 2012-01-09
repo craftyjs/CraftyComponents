@@ -1,0 +1,23 @@
+{
+    "require": {
+        "php":              ">=5.3.2",
+        "symfony/symfony":  ">=2.0.9,<2.1.0-dev",
+        "doctrine/orm":     "2.1.*",
+        "twig/extensions":  "*",
+
+        "symfony/assetic-bundle":         "*",
+        "sensio/generator-bundle":        "2.0.*",
+        "sensio/framework-extra-bundle":  "2.0.*",
+        "sensio/distribution-bundle":     "2.0.*",
+        "jms/security-extra-bundle":      "1.0.*",
+        "friendsofsymfony/jsrouting-bundle" : "*",
+        "friendsofsymfony/comment-bundle" : "*"
+
+    },
+
+    "autoload": {
+        "psr-0": {
+            "FWM" : "src/"
+        }
+    }
+}

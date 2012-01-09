@@ -1,0 +1,105 @@
+{% extends "::base.html.twig" %}
+
+{% block content %}
+<div class="content">
+	<div class="page-header">
+		<div class="row">
+		  <div class="span11">
+		    <h1>Add new component</h1>
+		  </div>
+		  <div class="span3">
+		    <a href="{{ path('fwm_crafty_components_list') }}" class="btn large primary">New components</a>
+		  </div>
+		</div>
+	</div>
+	<div class="row">
+	  <div class="span14">
+	  {% if component %}
+	  	<h2>Component "{{ component.name }}" was added or updated</h2>
+
+	  	<div class="row">
+	  		<div class="span10">
+		  		{% include 'FWMCraftyComponentsBundle:Index:singleComponent.html.twig' with {'component': component, 'version' : version, 'code' : code} %}
+	  		</div>
+	  	</div>
+      {% else %}
+      	<form action="{{ path('fwm_crafty_components_add_new') }}" method="post" class="">
+                  <input class="span9" type="text" name="url" placeholder="git://github.com/xxx/yyy.git">
+                  <button class="btn large" type="submit">Add component repository (github)</button>
+        </form>
+      {% endif %}
+	  </div>
+	</div>
+	<div class="row">
+	  	<div class="span14 package-example">
+	  	<h3>Github repository link</h3>
+	  	<p>
+	  		Your component must be hosted on <a href="https://www.github.com" target="_blank">Github.com</a> - don't worry it's free for open source projects.  
+	  	</p>
+	  	<p>To add a component to our database, you need to specify a link to it - in the format: git://github.com/author/componentName.git</p>
+	  	<h3>package.json</h3>
+	  	<p>
+	  		The purpose of this file is to specify meta data for your module. The format is inspired by the new jquery plugin system and extended a bit. Package.js must be valid with example.
+	  	</p>
+	  		<pre class="module-usage print">
+{
+    "name": "crafty",
+    "version": "0.4.4",
+    "title": "Crafty game framework",
+    "author": {
+        "name": "Louis Stowasser",
+        "url": "http://craftyjs.com/"
+    },
+    "licenses": [
+        {
+            "type": "MIT",
+            "url": "http://www.opensource.org/licenses/mit-license.php"
+        },
+        {
+            "type": "GPL",
+            "url": "http://www.opensource.org/licenses/gpl-license.php"
+        }
+    ],
+    "description": "Crafty is a modern component and event based framework for javascript games that targets DOM and canvas.",
+    "keywords": [
+        "framework",
+        "javascript"
+    ],
+    "homepage": "https://github.com/louisstow/Crafty",
+    "files": [
+        "src/license.txt", 
+		"src/core.js",
+		"src/intro.js", 
+		"src/HashMap.js",
+		"src/2D.js", 
+		"src/collision.js", 
+		"src/DOM.js",
+		"src/extensions.js",
+		"src/canvas.js",
+		"src/controls.js",
+		"src/animation.js",
+		"src/sprite.js",
+		"src/drawing.js", 
+		"src/isometric.js", 
+		"src/particles.js", 
+		"src/sound.js",
+		"src/html.js", 
+		"src/storage.js", 
+		"src/text.js", 
+		"src/loader.js", 
+		"src/math.js", 
+		"src/outro.js"
+    ]
+}</pre>
+	  	</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+	$('.topbar .nav li').removeClass('active');
+	$('.topbar .nav li.crafty-components').addClass('active');
+	SyntaxHighlighter.all()
+</script>
+{% endblock %}

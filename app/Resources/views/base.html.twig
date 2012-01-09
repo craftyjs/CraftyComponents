@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>{% block title %}CraftyComponents.com - components for your crafty games.{% endblock %}</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <!-- Le HTML5 shim, for IE6-8 support of HTML elements -->
+    <!--[if lt IE 9]>
+      <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Le styles -->
+    <link rel="stylesheet" href="http://twitter.github.com/bootstrap/1.4.0/bootstrap.min.css">
+    {% stylesheets output='css/styles.css'
+          '@FWMCraftyComponentsBundle/Resources/public/css/shCore.css'
+          '@FWMCraftyComponentsBundle/Resources/public/css/shThemeDefault.css'
+          '@FWMCraftyComponentsBundle/Resources/public/css/ours.css'
+    %}
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ asset_url }}" />
+    {% endstylesheets %}
+
+    {% javascripts output='js/libs.js'
+          '//ajax.googleapis.com/ajax/libs/jquery/1.7.0/jquery.min.js'
+          '//ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/xregexp.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/shCore.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/shLegacy.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/shAutoloader.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/shBrushJScript.js'
+          '@FWMCraftyComponentsBundle/Resources/public/js/tablesorter.js'
+    %}
+          <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+    {% block stylesheets %}{% endblock %}
+    <style type="text/css">
+      /* Override some defaults */
+      html, body {
+        background-color: #eee;
+      }
+      body {
+        padding-top: 40px; /* 40px to make the container go all the way to the bottom of the topbar */
+      }
+      .container {
+        width: 820px; /* downsize our container to make the content feel a bit tighter and more cohesive. NOTE: this removes two full columns from the grid, meaning you only go to 14 columns and not 16. */
+      }
+
+      /* The white background content wrapper */
+      .container > .content {
+        background-color: #fff;
+        padding: 20px;
+        margin: 0 -20px; /* negative indent the amount of the padding to maintain the grid system */
+        -webkit-border-radius: 0 0 6px 6px;
+           -moz-border-radius: 0 0 6px 6px;
+                border-radius: 0 0 6px 6px;
+        -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+           -moz-box-shadow: 0 1px 2px rgba(0,0,0,.15);
+                box-shadow: 0 1px 2px rgba(0,0,0,.15);
+      }
+
+      /* Page header tweaks */
+      .page-header {
+        background-color: #f5f5f5;
+        padding: 20px 20px 10px;
+        margin: -20px -20px 20px;
+      }
+
+      /* Give a quick and non-cross-browser friendly divider */
+      .content .span4 {
+        margin-left: 0;
+        padding-left: 19px;
+        border-left: 1px solid #eee;
+      }
+
+      .topbar .btn {
+        border: 0;
+      }
+
+    </style>
+
+    <!-- Le fav and touch icons -->
+    <link rel="shortcut icon" href="images/favicon.ico">
+    <link rel="apple-touch-icon" href="images/apple-touch-icon.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="images/apple-touch-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="images/apple-touch-icon-114x114.png">
+  </head>
+
+  <body>
+    {% block topbar %}
+    <div class="topbar">
+      <div class="fill">
+        <div class="container">
+          <a class="brand" href="{{ path('fwm_crafty_components_main') }}">CraftyComponents.com</a>
+          <ul class="nav">
+            <li class="flywithmonkey"><a href="{{ path('fwm_crafty_components_add_new') }}">Submit new component</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    {% endblock %}
+    
+    {% block container %}
+    <div class="container">
+      
+      {% block content %}
+      <div class="content">
+        <div class="page-header">
+          <h1>Page name <small>Supporting text or tagline</small></h1>
+        </div>
+        <div class="row">
+          <div class="span10">
+            <h2>Main content</h2>
+          </div>
+          <div class="span4">
+            <h3>Secondary content</h3>
+          </div>
+        </div>
+      </div>
+      {% endblock %}
+
+      {% block footer %}
+      <footer>
+        <p>&copy; Fly With Monkey 2012</p>
+      </footer>
+      {% endblock %}
+
+    </div> <!-- /container -->
+    {% endblock %}
+    {% block javascripts %}{% endblock %}
+
+  </body>
+</html>

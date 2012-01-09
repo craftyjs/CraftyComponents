@@ -1,0 +1,52 @@
+{% extends "::base.html.twig" %}
+
+{% block content %}
+<div class="content">
+	<div class="page-header">
+		<div class="row">
+		  <div class="span9">
+		  		<h2>Using a component in your game</h2>
+				<div style="width: 500px" class="span-two-thirds">
+					<pre class="module-usage print">
+Crafty.modules('http://cdn.craftycomponents.com/', { moveto: 'DEV' }, function () {
+    //module is ready
+    Crafty.e("MoveTo, 2D, DOM");
+});
+					</pre>
+				</div>
+		  </div>
+		  <div class="span5 submit-component">
+		    <a href="{{ path('fwm_crafty_components_add_new') }}" class="btn large primary">Submit new component</a>
+		  </div>
+		</div>
+	</div>
+	<div class="row">
+	  <div class="span14">
+	  	<h1>New Components</h1>
+		<table class="zebra-striped" id="components">
+        <thead>
+          	<tr>
+				<th class="header">Component name</th>
+				<th class="header">Description</th>
+				<th class="header">Author</th>
+				<th class="header">Latest release</th>
+			</tr>
+        </thead>
+        <tbody>
+        {% for comp in components %}
+            {% include 'FWMCraftyComponentsBundle:Index:singleSmallComponent.html.twig' with {'component': comp.component, 'version' : comp.version} %}
+        {% endfor %}
+      </tbody>
+      </table>
+	  </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  $(function() {
+    $("table#components").tablesorter({ sortList: [[0,0]] });
+  });
+</script>
+{% endblock %}

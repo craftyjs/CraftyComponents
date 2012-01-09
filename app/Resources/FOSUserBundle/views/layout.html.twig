@@ -1,0 +1,30 @@
+{% extends '::base.html.twig' %}
+
+{% block title %}{% endblock %}
+
+{% block content %}
+<div class="content">
+	<div class="page-header">
+	  <h1>Login/Register</h1>
+	</div>
+	<div class="row">
+	  <div class="span16">
+	  	<div>
+	        {% for key, message in app.session.getFlashes() %}
+	        <div class="{{ key }}">
+	            {{ message|trans({}, 'FOSUserBundle') }}
+	        </div>
+	        {% endfor %}
+
+			{% block fos_user_content %}{% endblock %}
+	  </div>
+	</div>
+</div>
+{% endblock %}
+
+{% block javascripts %}
+<script>
+	$('.topbar .nav li').removeClass('active');
+	$('.topbar .nav li.crafty-components').addClass('active');
+</script>
+{% endblock %}

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ This file is part of the FOSCommentBundle package.
+
+ (c) FriendsOfSymfony <http://friendsofsymfony.github.com/>
+
+ This source file is subject to the MIT license that is bundled
+ with this source code in the file LICENSE.
+-->
+
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping
+                        http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+
+    <mapped-superclass name="FOS\CommentBundle\Entity\Thread">
+
+        <field name="permalink" column="permalink" type="string" />
+
+        <field name="isCommentable" column="is_commentable" type="boolean" />
+
+        <field name="numComments" column="num_comments" type="integer" />
+
+        <field name="lastCommentAt" column="last_comment_at" type="datetime" nullable="true" />
+
+    </mapped-superclass>
+
+</doctrine-mapping>

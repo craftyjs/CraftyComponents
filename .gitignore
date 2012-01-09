@@ -1,0 +1,6 @@
+app/cache/*
+app/logs/*
+composer.phar
+composer.lock
+web/uploads/*
+app/config/parameters.ini
