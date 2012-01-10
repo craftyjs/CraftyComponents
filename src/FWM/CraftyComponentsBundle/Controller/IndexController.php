@@ -30,12 +30,14 @@ class IndexController extends Controller
             $repoOwner = $urlArray[count($urlArray) - 2];
             $repoName = str_replace('.git', '', $urlArray[count($urlArray) - 1]);
 
-            $ch = curl_init();
             $repoUrl = $url = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/trees/master';
+            $ch = curl_init();
             curl_setopt($ch, CURLOPT_URL, $url);
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data = ArrayService::objectToArray(json_decode(curl_exec($ch)));
+
+            // fetch repo files
             foreach($data['tree'] as $key => $value){
                 $element = $value;
                 if($element['path'] == 'package.json') {
@@ -60,8 +62,7 @@ class IndexController extends Controller
             $componentFilesValue = array();
             
             $dirs = $this->_findDirsAndFiles($parsedPackage['files'], array('/' => array()), '/');
-
-            //support dirs
+            // Load files form package.js
             $componentFilesValue =  $this->_getFilesFromDirs($componentFilesValue, $data['tree'], $dirs['/'], $namespace = '/');
 
             $componentData = array(
@@ -114,7 +115,11 @@ class IndexController extends Controller
                             $latestVersion = $value;    
                         }
                     }
-                }
+
+                    if($value->getValue() == 'DEV') {
+                        $oldDevValue = $value->getFileContent();
+                    };
+                };
 
                 if( $latestVersion->getValue() != $componentData['version']['value']) {
                     $component = $this->_createComponent($component, $componentData);
@@ -123,25 +128,24 @@ class IndexController extends Controller
                     $em->persist($component);
                     $em->persist($versionRelease);
                     $em->persist($version);
-                } if ($latestVersion->getSha() != $componentData['version']['sha']) {
+                } if (sha1($componentData['componentFilesValue']) != sha1($oldDevValue)) {
                     $version = $this->_createVersion($componentData, $component, 'DEV');
                     $em->persist($version);
                 }
-                
+
                 $em->flush();
             }
 
             $component = $em->getRepository('FWMCraftyComponentsBundle:Components')->getOneWithVersions($component->getId())->getArrayResult();
-            $component  = $component[0];
 
-            foreach($component['versions'] as $value){
+            foreach($component[0]['versions'] as $value){
                 if($value['value'] == 'RELEASE') {
                     $newVersion = $value;
                 }
             }
 
             return new RedirectResponse($this->generateUrl('fwm_crafty_components_single', array(
-                    'id' => $component['id']
+                    'id' => $component[0]['id']
             )));
         }
 
@@ -237,7 +241,6 @@ class IndexController extends Controller
         foreach(ArrayService::objectToArray(json_decode($componentData['componentFilesValue'])) as $value) {
             $tempFileContent[] = base64_decode($value);
         };
-
         $file = implode(' ', $tempFileContent);
 
         file_put_contents(
