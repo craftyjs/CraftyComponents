@@ -36,10 +36,8 @@ class IndexController extends Controller
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data = ArrayService::objectToArray(json_decode(curl_exec($ch)));
-
             foreach($data['tree'] as $key => $value){
                 $element = $value;
-
                 if($element['path'] == 'package.json') {
                     $ch = curl_init();
                     $url = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/blobs/'.$element['sha'];
@@ -47,30 +45,24 @@ class IndexController extends Controller
                     curl_setopt($ch, CURLOPT_HEADER, false);
                     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
                     $package = ArrayService::objectToArray(json_decode(curl_exec($ch)));
-                    $decodedPackage = utf8_encode(base64_decode($package['content']));
-                    $parsedPackage = json_decode($decodedPackage, true);
+                    $decodedPackage = base64_decode($package['content']);
+                    if(mb_detect_encoding(base64_decode($package['content']), "UTF-8") != 'UTF-8') {
+                        $decodedPackage = utf8_encode($decodedPackage);
+                    } else {
+                        $decodedPackage = preg_replace('/[^(\x20-\x7F)]*/','', $decodedPackage);    
+                    }
+                    $parsedPackage = ArrayService::objectToArray(json_decode($decodedPackage));
                 }
             };
 
             $files = array();
+            $dirs = array();
             $componentFilesValue = array();
-            foreach($parsedPackage['files'] as $value) {
-                $files[] = $value;
-            }
+            
+            $dirs = $this->_findDirsAndFiles($parsedPackage['files'], array('/' => array()), '/');
 
-            foreach($data['tree'] as $key => $value){
-                $element = $value;
-
-                if(in_array($element['path'], $files)) {
-                    $ch = curl_init();
-                    $url = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/blobs/'.$element['sha'];
-                    curl_setopt($ch, CURLOPT_URL, $url);
-                    curl_setopt($ch, CURLOPT_HEADER, false);
-                    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-                    $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
-                    $componentFilesValue[] = $packageFile['content'];
-                }
-            }
+            //support dirs
+            $componentFilesValue =  $this->_getFilesFromDirs($componentFilesValue, $data['tree'], $dirs['/'], $namespace = '/');
 
             $componentData = array(
                 'repoUrl' => $repoUrl,
@@ -90,7 +82,7 @@ class IndexController extends Controller
                 ),
                 'description' => $parsedPackage['description'],
                 'homepage' => $parsedPackage['homepage'],
-                'jsfiddle' => $parsedPackage['jsfiddle'],
+                'jsfiddle' => array_key_exists('jsfiddle', $parsedPackage)? $parsedPackage['jsfiddle'] : null,
                 'componentFilesValue' => json_encode($componentFilesValue)
             );
 
@@ -156,6 +148,54 @@ class IndexController extends Controller
         return array('component' => false);
     }
 
+    private function _findDirsAndFiles (array $files, $dirs, $namespace) {
+        foreach( $files as $value) {
+            $arrayValue = explode('/', $value);
+            if(count($arrayValue) > 1) {
+                $dirs[$namespace][$arrayValue[0]][] = $arrayValue[1];
+                $arrayValue = explode('/', $arrayValue[1]);
+                if(count($arrayValue) > 1) {
+                    $this->_findDirsAndFiles ($files, $dirs, $arrayValue[1]);
+                }
+            } else {
+                $dirs[$namespace][] = $value;
+            }
+        }
+
+        return $dirs;
+    }
+
+    private function _loadFileContentFromGithub($componentFilesValue, $url, $componentFilesValueKey) {
+        $ch = curl_init();
+        $url = $url;
+        curl_setopt($ch, CURLOPT_URL, $url);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
+        $componentFilesValue[$componentFilesValueKey] = $packageFile['content'];
+
+        return $componentFilesValue;
+    }
+
+    private function _getFilesFromDirs($componentFilesValue, $data, $dirs, $namespace = '/') {
+        foreach( $data as $key => $element){
+            if($element['type'] == 'tree' && array_key_exists($element['path'], $dirs)) {
+                $ch = curl_init();
+                $url = $element['url'];
+                curl_setopt($ch, CURLOPT_URL, $url);
+                curl_setopt($ch, CURLOPT_HEADER, false);
+                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
+                $dirData = $packageFile['tree'];
+                $componentFilesValue = $this->_getFilesFromDirs($componentFilesValue, $dirData, $dirs[$element['path']], $element['path']);
+            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {
+                $componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url'], array_search($element['path'], $dirs));
+            }
+        };
+        ksort($componentFilesValue);
+        return $componentFilesValue;
+    }
+
     private function _createComponent($component, $componentData) {
         $component->setName($componentData['name']);
         $component->setTitle($componentData['title']);
@@ -194,19 +234,30 @@ class IndexController extends Controller
         $version->setFileContent($componentData['componentFilesValue']);
         $version->setCreatedAt(new \DateTime());
 
+        foreach(ArrayService::objectToArray(json_decode($componentData['componentFilesValue'])) as $value) {
+            $tempFileContent[] = base64_decode($value);
+        };
+
+        $file = implode(' ', $tempFileContent);
+
         file_put_contents(
-            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.$componentData['name'].'-'.$componentData['version']['value'].'-uncompresed.js', 
-            base64_decode(implode(' ', json_decode($componentData['componentFilesValue'])))
+            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompresed.js', $file
         );
 
-        $js = new AssetCollection(array(
-            new FileAsset($this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.$componentData['name'].'-'.$componentData['version']['value'].'-uncompresed.js'),
-        ), array(
-            new Yui\JsCompressorFilter($this->get('request')->server->get('DOCUMENT_ROOT').'/../app/Resources/java/yuicompressor.jar'),
-        ));
+        try {
+            $js = new AssetCollection(array(
+                new FileAsset($this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompresed.js'),
+            ), array(
+                new Yui\JsCompressorFilter($this->get('request')->server->get('DOCUMENT_ROOT').'/../app/Resources/java/yuicompressor.jar'),
+            ));
+
+            $minifidedFile = $js->dump();
+        } catch(\Exception $e) {
+            $minifidedFile = $file;
+        };
 
         file_put_contents(
-            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.$componentData['name'].'-'.$componentData['version']['value'].'.js', $js->dump()
+            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'.js', $minifidedFile
         );
 
         return $version;
@@ -254,3 +305,5 @@ class IndexController extends Controller
     }
 
 }
+
+

@@ -3,16 +3,21 @@
 		<h3>{{ component.name }}  <small>by {{ component.author_name }}</small></h3>
 		<h5>{{ component.title }} </h5>
 		<div>{{ component.description }} </div>
-		{% for version in component.versions %}
-			{% if version.value == "RELEASE" %}
-				<div class="code span14 hide">Component code for "{{ version.value }}": <pre class="brush: js">{{ version.file_content|json_decode()|implode(' ')|base64_decode() }}</pre> </div>
-			{% endif %}
-		{% endfor %}
+
+
+		<h3>Use this component in your game</h3>
+		<div style="width: 500px" class="span-two-thirds">
+			<pre class="module-usage print">
+Crafty.modules('http://cdn.craftycomponents.com/', { {{ component.name }}: 'RELEASE' }, function () {
+    //module is ready
+    Crafty.e("{{ component.name }}, 2D, DOM");
+});</pre>
+		</div>
 	</div>
 	<div class="versions span4" style="margin-top:20px">
 	{% for version in component.versions|reverse %}
 		<div class="version" style="margin-top:5px">
-			<div>{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name }}-{{version.value}}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name }}-{{version.value}}-uncompresed.js">full</a></div>
+			<div>{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}-uncompresed.js">full</a></div>
 			<div> Date: {{version.createdAt|date()}}</div>
 		</div>
 	{% endfor %}

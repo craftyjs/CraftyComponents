@@ -4,5 +4,7 @@
 	</td>
 	<td class="description">{{ component.description }}</td>
 	<td class="author">{{ component.authorName }}</td>
-	<td class="release"> url to latest release</td>
+	<td class="release">
+		<a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-release.js">RELEASE</a>
+	</td>
 </tr>
