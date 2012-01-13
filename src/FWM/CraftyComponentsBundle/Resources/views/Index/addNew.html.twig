@@ -1,7 +1,7 @@
 {% extends "::base.html.twig" %}
 
 {% block content %}
-<div class="content">
+<div class="content add-new">
 	<div class="page-header">
 		<div class="row">
 		  <div class="span11">
@@ -14,29 +14,28 @@
 	</div>
 	<div class="row">
 	  <div class="span14">
-	  {% if component %}
-	  	<h2>Component "{{ component.name }}" was added or updated</h2>
-
-	  	<div class="row">
-	  		<div class="span10">
-		  		{% include 'FWMCraftyComponentsBundle:Index:singleComponent.html.twig' with {'component': component, 'version' : version, 'code' : code} %}
-	  		</div>
-	  	</div>
-      {% else %}
       	<form action="{{ path('fwm_crafty_components_add_new') }}" method="post" class="">
                   <input class="span9" type="text" name="url" placeholder="git://github.com/xxx/yyy.git">
                   <button class="btn large" type="submit">Add component repository (github)</button>
         </form>
-      {% endif %}
+
+        <h5>Github repository link</h5>
+        <p>
+            Your component must be hosted on <a href="https://www.github.com" target="_blank">Github.com</a> - don't worry it's free for open source projects.  
+        </p>
+        <p>To add a component to our database, you need to specify a link to it - in the format: git://github.com/author/componentName.git</p>
+
+        <h2>OR use Github Post-Receive URL option</h2>
+        <h5>Our Post-Receive URL</h5>
+        <pre class="module-usage print">{{ url('fwm_crafty_components_add_new') }}</pre>
+        <div class="post-receive">
+            <img class="one" src="{{asset('/bundles/fwmcraftycomponents/images/post-recive-one.png')}}" />
+            <img class="two" src="{{asset('/bundles/fwmcraftycomponents/images/post-recive-two.png')}}" />
+        </div>
 	  </div>
 	</div>
 	<div class="row">
 	  	<div class="span14 package-example">
-	  	<h3>Github repository link</h3>
-	  	<p>
-	  		Your component must be hosted on <a href="https://www.github.com" target="_blank">Github.com</a> - don't worry it's free for open source projects.  
-	  	</p>
-	  	<p>To add a component to our database, you need to specify a link to it - in the format: git://github.com/author/componentName.git</p>
 	  	<h3>package.json</h3>
 	  	<p>
 	  		The purpose of this file is to specify meta data for your module. The format is inspired by the new jquery plugin system and extended a bit. Package.js must be valid with example.

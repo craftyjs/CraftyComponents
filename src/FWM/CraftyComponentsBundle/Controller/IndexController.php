@@ -24,15 +24,32 @@ class IndexController extends Controller
     public function addNewAction(Request $request)
     {
         if($request->getMethod() == 'POST') {
-            $url = $request->request->get('url');
 
-            $urlArray = explode('/', $url);
-            $repoOwner = $urlArray[count($urlArray) - 2];
-            $repoName = str_replace('.git', '', $urlArray[count($urlArray) - 1]);
+            // serve Post-Receive URL
+            if($request->request->has('payload')) {
+                $posteRecive = ArrayService::objectToArray(json_decode($request->request->get('payload')));
+                $request->request->set('url', $posteRecive['repository']['url']);
+            }
 
-            $repoUrl = $url = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/trees/master';
+            if($request->request->has('url')) {
+                $url = $request->request->get('url');
+                $urlArray = explode('/', $url);
+                $repoOwner = $urlArray[count($urlArray) - 2];
+                $repoName = str_replace('.git', '', $urlArray[count($urlArray) - 1]);
+                $repoUrl = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/trees/master';
+            } else if($request->request->has('repo_url')) {
+                $url = $request->request->get('repo_url');
+                $urlArray = explode('/', $url);
+                $repoOwner = $urlArray[count($urlArray) - 5];
+                $repoName = $urlArray[count($urlArray) - 4];
+                $repoUrl = $request->request->get('repo_url');
+            } else {
+                return array('component' => false);
+            }
+
+            
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_URL, $repoUrl);
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
             $data = ArrayService::objectToArray(json_decode(curl_exec($ch)));
@@ -106,7 +123,6 @@ class IndexController extends Controller
                 $em->persist($versionDev);
                 $em->flush();
             } else {
-
                 $tempMaxVersion = 0;
                 foreach ($component->getVersions() as $value){
                     if($value->getValue() != 'RELEASE' && $value->getValue() != 'DEV') {
@@ -145,7 +161,7 @@ class IndexController extends Controller
             }
 
             return new RedirectResponse($this->generateUrl('fwm_crafty_components_single', array(
-                    'id' => $component[0]['id']
+                'id' => $component[0]['id']
             )));
         }
 
@@ -210,6 +226,7 @@ class IndexController extends Controller
         $component->setDescription($componentData['description']);
         $component->setHomepage($componentData['homepage']);
         $component->setRepoUrl($componentData['repoUrl']);
+        $component->setJsfiddle($componentData['jsfiddle']);
 
         return $component;
     }

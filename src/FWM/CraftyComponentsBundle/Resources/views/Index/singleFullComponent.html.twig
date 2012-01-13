@@ -5,16 +5,52 @@
 		<div>{{ component.description }} </div>
 
 
-		<h3>Use this component in your game</h3>
-		<div style="width: 500px" class="span-two-thirds">
-			<pre class="module-usage print">
+		<h3>{{ component.name }} details:</h3>
+
+
+		<ul class="tabs">
+		  <li class="active"><a href="#" data-tab="example">Example</a></li>
+		  <li><a href="#" data-tab="comments">Comments</a></li>
+		</ul>
+
+		<div class="example tabs-content">
+			
+			{% if component.jsfiddle %}
+			<iframe style="width: 100%; height: 300px" src="{{ component.jsfiddle|raw }}"></iframe>
+			{% elseif component.jsfiddle != 'disable' %}
+			<div style="width: 500px" class="span-two-thirds">
+				<pre class="module-usage print">
 Crafty.modules('http://cdn.craftycomponents.com/', { {{ component.name }}: 'RELEASE' }, function () {
     //module is ready
     Crafty.e("{{ component.name }}, 2D, DOM");
 });</pre>
+			</div>
+			{% endif %}
+
 		</div>
+		<div class="comments tabs-content" style="display:none">
+			<div id="disqus_thread"></div>
+			<script type="text/javascript">
+			    /* * * CONFIGURATION VARIABLES: EDIT BEFORE PASTING INTO YOUR WEBPAGE * * */
+			    var disqus_shortname = 'crafty-components'; // required: replace example with your forum shortname
+			    var disqus_url = "{{ path('fwm_crafty_components_single', {'id' : component.id}) }}";
+			    var disqus_developer = 1;
+
+			    /* * * DON'T EDIT BELOW THIS LINE * * */
+			    (function() {
+			        var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+			        dsq.src = 'http://' + disqus_shortname + '.disqus.com/embed.js';
+			        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+			    })();
+			</script>
+		</div>
+
 	</div>
 	<div class="versions span4" style="margin-top:20px">
+	<form action="{{ path('fwm_crafty_components_add_new') }}" method="POST">
+		<input type="hidden" value="{{ component.repoUrl }}" name="repo_url" />
+		<button class="btn success large update-repo">Update now!</button>
+	</form> 
 	{% for version in component.versions|reverse %}
 		<div class="version" style="margin-top:5px">
 			<div>{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}-uncompresed.js">full</a></div>

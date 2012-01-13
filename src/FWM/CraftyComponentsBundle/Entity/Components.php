@@ -87,6 +87,14 @@ class Components
     private $repoUrl;
 
     /**
+     * @var string $jsfiddle
+     *
+     * @ORM\Column(name="jsfiddle", type="string", length=255, nullable="true")
+     */
+    private $jsfiddle;
+
+
+    /**
      * @var array $versions
      *
      * @ORM\OneToMany(targetEntity="Versions", mappedBy="component")
@@ -310,6 +318,26 @@ class Components
     public function getRepoUrl()
     {
         return $this->repoUrl;
+    }
+
+    /**
+     * Set jsfiddle
+     *
+     * @param string $jsfiddle
+     */
+    public function setJsfiddle($jsfiddle)
+    {
+        $this->jsfiddle = $jsfiddle;
+    }
+
+    /**
+     * Get jsfiddle
+     *
+     * @return string 
+     */
+    public function getJsfiddle()
+    {
+        return $this->jsfiddle;
     }
 
     /**

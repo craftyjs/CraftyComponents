@@ -24,6 +24,21 @@
 
 {% block javascripts %}
 <script>
-	SyntaxHighlighter.all()
+	$('.container .single-component-view .component-data ul.tabs li a').click(function(e){
+		e.preventDefault();
+		if(!$(this).parent().hasClass('active')) {
+			$('.container .single-component-view .component-data ul.tabs li').removeClass('active');
+			$(this).parent().addClass('active');
+			var choosenTab = $(this).data('tab');
+			console.log(choosenTab);
+			$('.container .single-component-view .component-data .tabs-content').each(function(key, element){
+				if($(element).hasClass(choosenTab)){
+					$(element).show();
+				} else {
+					$(element).hide();
+				}
+			})
+		}
+	})
 </script>
 {% endblock %}
