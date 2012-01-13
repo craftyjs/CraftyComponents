@@ -12,14 +12,14 @@
 
 
 		<ul class="tabs">
-		  {% if jsfiddle %}
+		  {% if jsfiddle or component.jsfiddle != 'disable' %}
 		  <li {% if example %}class="active"{% endif %}><a href="#" data-tab="example">Example</a></li>
 		  {% endif %}
 		  <li {% if example is sameas(false) %}class="active"{% endif %}><a href="#" data-tab="comments">Comments</a></li>
 		</ul>
 
 		<div class="example tabs-content">
-			{% if jsfiddle%}
+			{% if jsfiddle %}
 			<iframe style="width: 100%; height: 300px" src="{{ component.jsfiddle|raw }}"></iframe>
 			{% elseif component.jsfiddle != 'disable' %}
 			<div style="width: 500px" class="span-two-thirds">

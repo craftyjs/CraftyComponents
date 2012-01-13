@@ -144,7 +144,10 @@ class IndexController extends Controller
                     $em->persist($component);
                     $em->persist($versionRelease);
                     $em->persist($version);
-                } if (sha1($componentData['componentFilesValue']) != sha1($oldDevValue)) {
+                } if (
+                    sha1($componentData['componentFilesValue']) != sha1($oldDevValue) || 
+                    $componentData['version']['sha'] != $latestVersion->getSha()) 
+                {
                     $version = $this->_createVersion($componentData, $component, 'DEV');
                     $em->persist($version);
                 }
