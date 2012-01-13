@@ -134,6 +134,7 @@ class IndexController extends Controller
 
                     if($value->getValue() == 'DEV') {
                         $oldDevValue = $value->getFileContent();
+                        $latestDevVersion = $value;
                     };
                 };
 
@@ -146,7 +147,7 @@ class IndexController extends Controller
                     $em->persist($version);
                 } if (
                     sha1($componentData['componentFilesValue']) != sha1($oldDevValue) || 
-                    $componentData['version']['sha'] != $latestVersion->getSha()) 
+                    $componentData['version']['sha'] != $latestDevVersion->getSha()) 
                 {
                     $component = $this->_createComponent($component, $componentData);
                     $version = $this->_createVersion($componentData, $component, 'DEV');
