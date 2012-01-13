@@ -30,7 +30,6 @@
 			$('.container .single-component-view .component-data ul.tabs li').removeClass('active');
 			$(this).parent().addClass('active');
 			var choosenTab = $(this).data('tab');
-			console.log(choosenTab);
 			$('.container .single-component-view .component-data .tabs-content').each(function(key, element){
 				if($(element).hasClass(choosenTab)){
 					$(element).show();
