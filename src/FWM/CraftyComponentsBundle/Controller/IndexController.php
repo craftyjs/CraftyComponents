@@ -148,8 +148,10 @@ class IndexController extends Controller
                     sha1($componentData['componentFilesValue']) != sha1($oldDevValue) || 
                     $componentData['version']['sha'] != $latestVersion->getSha()) 
                 {
+                    $component = $this->_createComponent($component, $componentData);
                     $version = $this->_createVersion($componentData, $component, 'DEV');
                     $em->persist($version);
+                    $em->persist($component);
                 }
 
                 $em->flush();
