@@ -55,7 +55,9 @@ Crafty.modules('http://cdn.craftycomponents.com/', { {{ component.name }}: 'RELE
 	</form> 
 	{% for version in component.versions|reverse %}
 		<div class="version" style="margin-top:5px">
-			<div>{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}-uncompresed.js">full</a></div>
+			<div>
+				{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
+			</div>
 			<div> Date: {{version.createdAt|date()}}</div>
 		</div>
 	{% endfor %}

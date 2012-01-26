@@ -267,12 +267,12 @@ class IndexController extends Controller
         $file = implode(' ', $tempFileContent);
 
         file_put_contents(
-            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompresed.js', $file
+            $this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompressed.js', $file
         );
 
         try {
             $js = new AssetCollection(array(
-                new FileAsset($this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompresed.js'),
+                new FileAsset($this->get('request')->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($componentData['version']['value']).'-uncompressed.js'),
             ), array(
                 new Yui\JsCompressorFilter($this->get('request')->server->get('DOCUMENT_ROOT').'/../app/Resources/java/yuicompressor.jar'),
             ));
