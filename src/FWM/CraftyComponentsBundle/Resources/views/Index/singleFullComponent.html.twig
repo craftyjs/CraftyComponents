@@ -20,6 +20,7 @@
 		<div class="example tabs-content">
 			{% if jsfiddle %}
 			<iframe style="width: 100%; height: 300px" src="{{ component.jsfiddle|raw }}"></iframe>
+			<div class="fullscreen"><a href="#">Fullscreen</a></div>
 			{% elseif component.jsfiddle != 'disable' %}
 			<div style="width: 500px" class="span-two-thirds">
 				<pre class="module-usage print">
@@ -56,10 +57,43 @@ Crafty.modules('http://cdn.craftycomponents.com/', { {{ component.name }}: 'RELE
 	{% for version in component.versions|reverse %}
 		<div class="version" style="margin-top:5px">
 			<div>
-				{{version.value}}: <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
+				{{version.value}}: <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
 			</div>
 			<div> Date: {{version.createdAt|date()}}</div>
 		</div>
 	{% endfor %}
 	</div>
 </div>
+
+<script type="text/javascript">
+	$('.fullscreen').click(function(){
+		$('.container').append('<div class="fullscreen-container"></div>')
+			.append('<div class="fullscreen-fade"></div>');
+
+		$('.fullscreen-fade').css({
+			'position' : 'absolute',
+			'top' : 0,
+			'left' : 0,
+			'width' : $('body').width(),
+			'height' : $('body').height(),
+			'background-color' : '#000',
+			'opacity' : '0.8'
+		});
+
+		$('.fullscreen-container').html($('.example.tabs-content').html())
+			.css({
+				'z-index' : 1000,
+				'width' : '850px',
+				'height' : '800px',
+				'position' : 'absolute',
+				'top' : '100px',
+				'left' : ($('body').width() - 850)/2
+			})
+		$('.fullscreen-container .fullscreen').remove();
+
+		$('.fullscreen-fade').click(function(){
+			$('.fullscreen-container').remove();
+			$('.fullscreen-fade').remove();
+		})
+	});	
+</script>

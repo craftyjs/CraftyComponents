@@ -5,6 +5,7 @@
 	<td class="description">{{ component.description }}</td>
 	<td class="author">{{ component.authorName }}</td>
 	<td class="release">
-		<a href="http://cdn.{{ app.request.server.get('HTTP_HOST') }}/{{ component.name|lower }}-release.js">RELEASE</a>
+		<a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-release.js">RELEASE</a>
 	</td>
+	<td class="latest-date">{{ version.createdAt|date('Y-m-d h:i:s') }}</td>
 </tr>

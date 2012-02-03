@@ -126,7 +126,7 @@ class IndexController extends Controller
                 $tempMaxVersion = 0;
                 foreach ($component->getVersions() as $value){
                     if($value->getValue() != 'RELEASE' && $value->getValue() != 'DEV') {
-                        if ((float)$value->getValue() > $tempMaxVersion){
+                        if (version_compare($value->getValue(), $tempMaxVersion, '>')){
                             $tempMaxVersion = (float)$value->getValue();
                             $latestVersion = $value;    
                         }

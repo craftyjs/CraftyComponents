@@ -30,6 +30,7 @@ Crafty.modules({ moveto: 'DEV' }, function () {
 				<th class="header">Description</th>
 				<th class="header">Author</th>
 				<th class="header">Latest release</th>
+				<th class="header">Latest RELEASE date</th>
 			</tr>
         </thead>
         <tbody>
@@ -46,7 +47,7 @@ Crafty.modules({ moveto: 'DEV' }, function () {
 {% block javascripts %}
 <script>
   $(function() {
-    $("table#components").tablesorter({ sortList: [[0,0]] });
+    $("table#components").tablesorter({ sortList: [[4,1]] });
   });
 </script>
 {% endblock %}
