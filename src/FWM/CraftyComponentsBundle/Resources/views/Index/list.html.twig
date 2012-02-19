@@ -39,6 +39,9 @@ Crafty.modules({ moveto: 'DEV' }, function () {
         {% endfor %}
       </tbody>
       </table>
+        <div class="navigation">
+        	{{ componentsPaginator.render()|raw }}
+    	</div>
 	  </div>
 	</div>
 </div>

@@ -64,3 +64,14 @@ services:
         class: FWM\ServicesBundle\Extension\ServicesExtension
         tags:
             - { name: twig.extension }
+    twig.extension.debug:
+       class: Twig_Extensions_Extension_Debug
+       tags:
+           - { name: twig.extension }
+    twig.extension.text:
+       class: Twig_Extensions_Extension_Text
+       tags:
+           - { name: twig.extension }
+
+parameters:
+    knp_paginator.template.pagination: ::pagination.html.twig

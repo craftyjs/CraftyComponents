@@ -14,6 +14,8 @@ return array(
     'Sensio\\Bundle\\DistributionBundle' => $vendorDir . '/sensio/distribution-bundle/',
     'Monolog' => $vendorDir . '/monolog/monolog/src/',
     'Metadata\\' => $vendorDir . '/jms/metadata/src/',
+    'Knp\\Component' => $vendorDir . '/knplabs/knp-components/src/',
+    'Knp\\Bundle\\PaginatorBundle' => $vendorDir . '/knplabs/knp-paginator-bundle/',
     'JMS\\SecurityExtraBundle' => $vendorDir . '/jms/security-extra-bundle/',
     'FWM' => dirname($vendorDir) . '/src/',
     'FOS\\JsRoutingBundle' => $vendorDir . '/friendsofsymfony/jsrouting-bundle/',

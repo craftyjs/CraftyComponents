@@ -297,7 +297,14 @@ class IndexController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $components = $em->getRepository('FWMCraftyComponentsBundle:Components')->getNew()->getResult();
+        $components = $em->getRepository('FWMCraftyComponentsBundle:Components')->getNew();
+
+        $paginator = $this->get('knp_paginator');
+        $components = $paginator->paginate(
+            $components,
+            $this->get('request')->query->get('page', 1),
+            10
+        );
 
         $componentsArray = array();
         foreach($components as $comp) {
@@ -311,7 +318,7 @@ class IndexController extends Controller
         }
 
         return array(
-            'components' => $componentsArray
+            'components' => $componentsArray, 'componentsPaginator' => $components
         );
     }
 
