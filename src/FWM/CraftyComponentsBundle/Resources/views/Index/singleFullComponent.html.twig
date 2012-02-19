@@ -3,8 +3,9 @@
 
 <div class="row">
 	<div class="span10 component-data">
-		<h5>{{ component.title }} </h5>
+		<h5>{{ component.title }}</h5>
 		<div>{{ component.description }} </div>
+		{% if component.homepage %} <div class="homepage">Homepage: <a href="{{ component.homepage }}">{{ component.homepage }}</a></div> {% endif %}
 
 
 		<h3>{{ component.name }} details:</h3>
