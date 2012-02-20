@@ -28,3 +28,8 @@ doctrine:
         dbname:   fwmlabs
         user:     dev
         password: dev
+
+parameters:
+    fwm_crafty_components:
+        crafty:
+            id: 35

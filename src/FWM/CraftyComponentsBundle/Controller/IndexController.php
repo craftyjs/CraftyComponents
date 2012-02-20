@@ -297,13 +297,28 @@ class IndexController extends Controller
     public function listAction()
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $components = $em->getRepository('FWMCraftyComponentsBundle:Components')->getNew();
+        $craftyComponentsConfig = $this->container->getParameter('fwm_crafty_components');
+        $components = $em->getRepository('FWMCraftyComponentsBundle:Components')->getNew($craftyComponentsConfig);
+
+        $crafty = $em->getRepository('FWMCraftyComponentsBundle:Components')
+            ->getOneWithVersions($craftyComponentsConfig['crafty']['id'])
+            ->getSingleResult();
+        $craftyVersions = $crafty->getVersions();
+
+        $latestCrafty = $craftyVersions[0];
+        foreach ($craftyVersions as $version) {
+            if ($version->getValue() != 'DEV' && $version->getValue() != 'RELEASE') {
+                if (version_compare($version->getValue(), $latestCrafty->getValue(), '>')){
+                    $latestCrafty = $version;
+                }
+            }
+        }
 
         $paginator = $this->get('knp_paginator');
         $components = $paginator->paginate(
             $components,
             $this->get('request')->query->get('page', 1),
-            10
+            2
         );
 
         $componentsArray = array();
@@ -318,12 +333,15 @@ class IndexController extends Controller
         }
 
         return array(
-            'components' => $componentsArray, 'componentsPaginator' => $components
+            'components' => $componentsArray, 
+            'componentsPaginator' => $components,
+            'crafty' => $crafty,
+            'craftyVersion' => $latestCrafty
         );
     }
 
     /**
-     * @Route("/components/single/{id}", name="fwm_crafty_components_single")
+     * @Route("/components/single/{id}/{name}", name="fwm_crafty_components_single", defaults={"name" = false})
      * @Template()
      */
     public function singleAction($id)

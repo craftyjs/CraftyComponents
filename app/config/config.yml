@@ -75,3 +75,6 @@ services:
 
 parameters:
     knp_paginator.template.pagination: ::pagination.html.twig
+    fwm_crafty_components:
+        crafty:
+            id: 8

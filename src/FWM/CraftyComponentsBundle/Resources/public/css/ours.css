@@ -12,6 +12,7 @@ pre.print{
 	padding-top: 73px;
 }
 .container > footer p {text-align: left;}
+.container .pagination {margin: 0 auto;}
 
 
 .container .single-component-view .component-data{margin-right: 20px;}
@@ -22,3 +23,12 @@ pre.print{
 
 .container .component-data .homepage{margin-top: 10px;}
 .container .flywithmonkey a {padding: 0px}
+
+.content #crafty-box {}
+.content #crafty-box .title {}
+.content #crafty-box .desc{margin-bottom: 10px;}
+.content #crafty-box .homepage{margin-bottom: 15px;}
+.content #crafty-box .options{}
+.content #crafty-box .options a.more {margin-right: 10px;}
+.content #crafty-box .options span.release{margin-left: 20px;}
+

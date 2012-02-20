@@ -16,7 +16,8 @@ class ServicesExtension extends \Twig_Extension {
         	'strlen' => new \Twig_Filter_Method($this, 'strlen'),
             'json_decode' => new \Twig_Filter_Method($this, 'json_decode'),
             'base64_decode' => new \Twig_Filter_Method($this, 'base64_decode'),
-            'implode' => new \Twig_Filter_Method($this, 'implode')
+            'implode' => new \Twig_Filter_Method($this, 'implode'),
+            'slugify' => new \Twig_Filter_Method($this, 'slugify')
         );
     }
 
@@ -60,6 +61,30 @@ class ServicesExtension extends \Twig_Extension {
 
     public function implode($text,$spliter){
         return implode($spliter,$text);
+    }
+
+    public function slugify($text)
+    {
+        // replace non letter or digits by - 
+        $text = preg_replace('~[^\\pL\d]+~u', '-', $text); 
+
+        // trim 
+        $text = trim($text, '-'); 
+
+        // transliterate 
+        $text = iconv('utf-8', 'us-ascii//TRANSLIT', $text); 
+
+        // lowercase 
+        $text = strtolower($text); 
+
+        // remove unwanted characters 
+        $text = preg_replace('~[^-\w]+~', '', $text); 
+        if (empty($text)) 
+        { 
+            return 'n-a'; 
+        } 
+
+        return $text; 
     }
 
     public function getName()
