@@ -347,7 +347,8 @@ class IndexController extends Controller
     public function singleAction($id)
     {
         $em = $this->getDoctrine()->getEntityManager();
-        $component = $em->getRepository('FWMCraftyComponentsBundle:Components')->getOneWithVersions($id)->getArrayResult();
+        $component = $em->getRepository('FWMCraftyComponentsBundle:Components')
+            ->getOneWithVersions($id)->getArrayResult();
         $component  = $component[0];
 
         return array(
