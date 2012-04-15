@@ -1,8 +1,13 @@
 
-.clear {clear: both;}
+.clear, .clearfix {clear: both;}
 pre.print{
 	background-color: #FEFBF3;
 	padding: 15px;
+}
+
+h1 small {
+	display: block;
+	margin: 10px;
 }
 
 .text-center {text-align: center;}
@@ -24,7 +29,7 @@ pre.print{
 .container .component-data .homepage{margin-top: 10px;}
 .container .flywithmonkey a {padding: 0px}
 
-.content #crafty-box {}
+.content #crafty-box {height: 220px;}
 .content #crafty-box .title {}
 .content #crafty-box .desc{margin-bottom: 10px;}
 .content #crafty-box .homepage{margin-bottom: 15px;}
@@ -32,3 +37,10 @@ pre.print{
 .content #crafty-box .options a.more {margin-right: 10px;}
 .content #crafty-box .options span.release{margin-left: 20px;}
 
+.content #flexpi-box { margin: 0px 0px 20px 20px; width: 280px; height: 220px;}
+.content #flexpi-box img.flexpi-logo {width: 140px; height: 55px;}
+.content #flexpi-box .desc{margin-bottom: 10px;}
+.content #flexpi-box .homepage{margin-bottom: 15px;}
+.content #flexpi-box .options{}
+.content #flexpi-box .options a.more {margin-right: 10px;}
+.content #flexpi-box .options span.release{margin-left: 20px;}

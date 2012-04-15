@@ -102,6 +102,13 @@ class Components
     private $versions;
 
     /**
+     * @var array $tags
+     *
+     * @ORM\OneToMany(targetEntity="Tags", mappedBy="component")
+     */
+    private $tags;
+
+    /**
      * @var datetime $createdAt
      *
      * @ORM\Column(name="created_at", type="datetime")
@@ -115,10 +122,6 @@ class Components
      */
     protected $isActive;
 
-    public function __construct()
-    {
-        $this->versions = new ArrayCollection();
-    }
 
     /**
      * Get id
@@ -395,4 +398,40 @@ class Components
     {
         return $this->isActive;
     }
+
+    /**
+     * Add versions
+     *
+     * @param FWM\CraftyComponentsBundle\Entity\Versions $versions
+     */
+    public function addVersions(\FWM\CraftyComponentsBundle\Entity\Versions $versions)
+    {
+        $this->versions[] = $versions;
+    }
+
+    /**
+     * Add tags
+     *
+     * @param FWM\CraftyComponentsBundle\Entity\Tags $tags
+     */
+    public function addTags(\FWM\CraftyComponentsBundle\Entity\Tags $tags)
+    {
+        $this->tags[] = $tags;
+    }
+
+    /**
+     * Get tags
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+    public function __construct()
+    {
+        $this->versions = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+    
 }

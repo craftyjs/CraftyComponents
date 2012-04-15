@@ -123,13 +123,20 @@
 
       {% block footer %}
       <footer>
-        <p>&copy; Fly With Monkey 2012</p>
+        <a href="http://flywithmonkey.com" title="HTML5 apps and games development"><p>&copy; Fly With Monkey {{ date()|date('Y')}}</p></a>
       </footer>
       {% endblock %}
 
     </div> <!-- /container -->
     {% endblock %}
     {% block javascripts %}{% endblock %}
-
+    <script type="text/javascript">
+      var _gaq = _gaq || [];_gaq.push(['_setAccount', 'UA-27210632-4']);_gaq.push(['_trackPageview']);
+      (function() {
+        var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+        ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+        var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+      })();
+    </script>
   </body>
 </html>

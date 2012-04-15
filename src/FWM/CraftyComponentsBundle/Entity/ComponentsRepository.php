@@ -36,4 +36,19 @@ class ComponentsRepository extends EntityRepository
                 ->getQuery();
     }
 
+    public function fillComponent($component, $componentData) {
+        $component->setName($componentData['name']);
+        $component->setTitle($componentData['title']);
+        $component->setAuthorName($componentData['author']['name']);
+        $component->setAuthorUrl($componentData['author']['url']);
+        $component->setLicenseType($componentData['license']['type']);
+        $component->setLicenseUrl($componentData['license']['url']);
+        $component->setDescription($componentData['description']);
+        $component->setHomepage($componentData['homepage']);
+        $component->setRepoUrl($componentData['repoUrl']);
+        $component->setJsfiddle($componentData['jsfiddle']);
+
+        return $component;
+    }
+
 }

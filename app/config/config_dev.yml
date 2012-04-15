@@ -32,4 +32,4 @@ doctrine:
 parameters:
     fwm_crafty_components:
         crafty:
-            id: 35
+            id: 58

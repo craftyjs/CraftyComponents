@@ -51,18 +51,27 @@ Crafty.modules('http://cdn.craftycomponents.com/', { {{ component.name }}: 'RELE
 
 	</div>
 	<div class="versions span4" style="margin-top:20px">
-	<form action="{{ path('fwm_crafty_components_add_new') }}" method="POST">
-		<input type="hidden" value="{{ component.repoUrl }}" name="repo_url" />
-		<button class="btn success large update-repo">Update now!</button>
-	</form> 
-	{% for version in component.versions|reverse %}
-		<div class="version" style="margin-top:5px">
-			<div>
-				{{version.value}}: <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
+		<form action="{{ path('fwm_crafty_components_add_new') }}" method="POST">
+			<input type="hidden" value="{{ component.repoUrl }}" name="repo_url" />
+			<button class="btn success large update-repo">Update now!</button>
+		</form> 
+		{% for version in component.versions|reverse if '-' not in version.value  %}
+			<div class="version" style="margin-top:5px">
+				<div>
+					{{version.value}}: <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
+				</div>
+				<div> Date: {{version.createdAt|date()}}</div>
 			</div>
-			<div> Date: {{version.createdAt|date()}}</div>
-		</div>
-	{% endfor %}
+		{% endfor %} 
+		<h4> Additional branches</h4>
+		{% for version in component.versions|reverse if '-' in version.value  %}
+			<div class="version" style="margin-top:5px">
+				<div>
+					{{version.value}}: <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}.js">min</a> | <a href="http://cdn.craftycomponents.com/{{ component.name|lower }}-{{version.value|lower }}-uncompressed.js">full</a>
+				</div>
+				<div> Date: {{version.createdAt|date()}}</div>
+			</div>
+		{% endfor %}
 	</div>
 </div>
 

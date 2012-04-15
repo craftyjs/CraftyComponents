@@ -22,7 +22,7 @@ Crafty.modules({ moveto: 'DEV' }, function () {
 	</div>
 	<div class="row">
 	  <div class="span14">
-	  	<div id="crafty-box" class="hero-unit">
+	  	<div id="crafty-box" class="hero-unit span5 pull-left">
 	  	 	<h1 class="title">{{ crafty.name }}  <small>by {{ crafty.authorName }}</small></h1>
 	  	 	<div class="desc">{{ crafty.description }} </div>
 			<div class="homepage">
@@ -37,6 +37,19 @@ Crafty.modules({ moveto: 'DEV' }, function () {
 					</span>
 			</div>
 	  	</div>
+	  	<div id="flexpi-box" class="hero-unit span5 pull-left">
+	  		<img src="http://flexpi.com//bundles/fwmflexpipage/images/logo-flexpi.png" class="flexpi-logo">
+	  	 	<h1 class="title"><small>by Fly With Monkey</small></h1>
+	  	 	<div class="desc">HTML5 games developers needs tools! Use custom data logger, social networks integration, payments integration and give badges for games users.</div>
+			<div class="homepage">
+				{% if crafty.homepage %} <div class="homepage"><a title="Tools for html5 games developers" href="http://flexpi.com">Flexpi.com - tools for html5 games developers</a></div> {% endif %}
+			</div>
+			<div class="options">
+				<a href="http://flexpi.com/register/" title="Tools for html5 games developers" class="btn primary more">Create an acount</a>
+				<a href="http://flexpi.com/documentation/" title="Flexpi.com documentation" class="btn success">Documentation</a>
+			</div>
+	  	</div>
+	  	<div class="clearfix"></div>
 	  	<h1>New Components</h1>
 		<table class="zebra-striped" id="components">
         <thead>

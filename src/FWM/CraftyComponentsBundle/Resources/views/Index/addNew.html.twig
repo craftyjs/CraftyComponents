@@ -19,6 +19,15 @@
                   <button class="btn large" type="submit">Add component repository (github)</button>
         </form>
 
+        {% if errors is defined %}
+            {% for error in errors %}
+            <div class="alert-message error">
+              <a class="close" href="#">×</a>
+              <p><strong>Ups!</strong> {{ error }}</p>
+            </div>
+            {% endfor %}
+        {% endif %}
+
         <h5>Github repository link</h5>
         <p>
             Your component must be hosted on <a href="https://www.github.com" target="_blank">Github.com</a> - don't worry it's free for open source projects.  
