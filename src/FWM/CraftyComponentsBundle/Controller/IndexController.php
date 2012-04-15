@@ -168,12 +168,18 @@ class IndexController extends Controller
             $latestDevVersion   = false;
             $tempMaxVersion     = 0;
             foreach ($component->getVersions() as $value){
-                $release    = 'RELEASE';    if ($branch != null) {$release = $release.'-'.$branch; }
-                $dev        = 'DEV';        if ($branch != null) {$dev = $dev.'-'.$branch; }
-                if ($value->getValue() != $release && $value->getValue() != $dev) {
-                    if (version_compare($value->getValue(), $tempMaxVersion, '>')){
-                        $tempMaxVersion = $value->getValue();
-                        $latestVersion = $value;    
+                $release            = 'RELEASE';            if ($branch != null) {$release = $release.'-'.$branch; }
+                $dev                = 'DEV';                if ($branch != null) {$dev = $dev.'-'.$branch; }
+                $valueVersion       = $value->getValue();   if ($branch != null) {$valueVersion = $valueVersion.'-'.$branch; }
+                if ($valueVersion != $release && $valueVersion != $dev) {
+                    if (version_compare($valueVersion, $tempMaxVersion, '>')){
+                        if ($branch != false && strpos('-'.$branch, $valueVersion)) {
+                            $tempMaxVersion = $valueVersion;
+                            $latestVersion = $value;
+                        } else if($branch == false) {
+                            $tempMaxVersion = $valueVersion;
+                            $latestVersion = $value;
+                        }
                     }
                 }
 
