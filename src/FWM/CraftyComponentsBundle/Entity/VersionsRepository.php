@@ -20,6 +20,7 @@ class VersionsRepository extends EntityRepository
 {
 	public function createVersion($request, $componentData, $component, $versionType = false, $branch = 'master') {
         $em = $this->_em;
+        $tempFileContent = array();
 
         /**
          * manage versionType name

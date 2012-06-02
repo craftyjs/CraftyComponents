@@ -144,6 +144,7 @@ class IndexController extends Controller
         $component              = $componentRepository->findOneBy(array('repoUrl' => $componentData['repoUrl']));
 
         if (!$component) {
+
             /**
              * First creation component and versions
              */
@@ -158,6 +159,7 @@ class IndexController extends Controller
             $em->persist($versionRelease);
             $em->persist($versionDev);
             $em->flush();
+
         } else {
             /**
              * Update component data form package.json and create new versions when needed
@@ -167,19 +169,28 @@ class IndexController extends Controller
             $latestVersion      = false;
             $latestDevVersion   = false;
             $tempMaxVersion     = 0;
+
             foreach ($component->getVersions() as $value){
-                $release            = 'RELEASE';            if ($branch != null) {$release = $release.'-'.$branch; }
-                $dev                = 'DEV';                if ($branch != null) {$dev = $dev.'-'.$branch; }
-                $valueVersion       = $value->getValue();   if ($branch != null) {$valueVersion = $valueVersion.'-'.$branch; }
+                $release = 'RELEASE';            
+                if ($branch != null) {
+                    $release = $release.'-'.$branch; 
+                }
+
+                $dev = 'DEV';
+                if ($branch != null) {
+                    $dev = $dev.'-'.$branch; 
+                }
+
+                $valueVersion = $value->getValue();
+                if ($branch) {
+                    $valueVersion = str_replace('-'.$branch, '', $valueVersion);
+                }
+
                 if ($valueVersion != $release && $valueVersion != $dev) {
                     if (version_compare($valueVersion, $tempMaxVersion, '>')){
-                        if ($branch != false && strpos('-'.$branch, $valueVersion)) {
-                            $tempMaxVersion = $valueVersion;
-                            $latestVersion = $value;
-                        } else if($branch == false) {
-                            $tempMaxVersion = $valueVersion;
-                            $latestVersion = $value;
-                        }
+                        $tempMaxVersion = $valueVersion;
+                        $latestVersion = $value;
+                        print_r($valueVersion.' > '.$tempMaxVersion);
                     }
                 }
 
@@ -289,13 +300,13 @@ class IndexController extends Controller
                 $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
                 $dirData = $packageFile['tree'];
                 $componentFilesValue = $this->_getFilesFromDirs($componentFilesValue, $dirData, $dirs[$element['path']], $element['path']);
-            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {
-                $componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url'], array_search($element['path'], $dirs));
+            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {$componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url'], array_search($element['path'], $dirs));
             }
         };
         ksort($componentFilesValue);
         return $componentFilesValue;
     }
+
 
     /**
      * @Route("/", name="fwm_crafty_components_main")
