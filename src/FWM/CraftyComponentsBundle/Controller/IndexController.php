@@ -268,6 +268,7 @@ class IndexController extends Controller
 
     private function _findDirsAndFiles (array $files, $dirs, $namespace) {
         $array = array();
+        $count = 0;
         foreach ($files as $path) {
             $list = explode('/', $path);
             $n = count($list);
@@ -277,8 +278,9 @@ class IndexController extends Controller
                 $key = $list[$i];
                 if ($i == ($n-1)) {
                     $arrayRef = &$arrayRef;
-                    $arrayRef[] = $key;
+                    $arrayRef[$count] = $key;
                     ksort($arrayRef);
+                    $count++;
                 } else {
                     $arrayRef = &$arrayRef[$key]; // index into the next level
                 }
@@ -288,19 +290,21 @@ class IndexController extends Controller
         return array('/' => $array);
     }
 
-    private function _loadFileContentFromGithub($componentFilesValue, $url) {
+    private function _loadFileContentFromGithub($componentFilesValue, $url, $key) {
         $ch = curl_init();
         $url = $url;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
-        $componentFilesValue[] = $packageFile['content'];
+        $componentFilesValue[$key] = $packageFile['content'];
 
         return $componentFilesValue;
     }
 
     private function _getFilesFromDirs($componentFilesValue, $data, $dirs, $namespace = '/') {
+        $floatFilesArray = array();
+
         foreach( $data as $key => $element){
             if($element['type'] == 'tree' && array_key_exists($element['path'], $dirs)) {
                 $ch = curl_init();
@@ -311,12 +315,14 @@ class IndexController extends Controller
                 $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
                 $dirData = $packageFile['tree'];
                 $componentFilesValue = $this->_getFilesFromDirs($componentFilesValue, $dirData, $dirs[$element['path']], $element['path']);
-            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {$componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url']);
+            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {
+                $componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url'], array_search($element['path'], $dirs));
+                
             }
         };
+        ksort($componentFilesValue);
         return $componentFilesValue;
     }
-
 
     /**
      * @Route("/", name="fwm_crafty_components_main")
