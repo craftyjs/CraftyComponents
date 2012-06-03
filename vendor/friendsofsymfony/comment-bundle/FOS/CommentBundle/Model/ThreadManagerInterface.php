@@ -36,6 +36,15 @@ interface ThreadManagerInterface
     function findThreadBy(array $criteria);
 
     /**
+     * Finds threads by the given criteria
+     *
+     * @param array $criteria
+     *
+     * @return array of ThreadInterface
+     */
+    function findThreadsBy(array $criteria);
+
+    /**
      * Finds all threads.
      *
      * @return array of ThreadInterface
@@ -45,16 +54,26 @@ interface ThreadManagerInterface
     /**
      * Creates an empty comment thread instance
      *
+     * @param bool $id
      * @return Thread
      */
-    function createThread();
+    function createThread($id = null);
 
     /**
-     * Saves a new thread
+     * Saves a thread
      *
      * @param ThreadInterface $thread
      */
-    function addThread(ThreadInterface $thread);
+    function saveThread(ThreadInterface $thread);
+
+    /**
+     * Checks if the thread was already persisted before, or if it's a new one.
+     *
+     * @param ThreadInterface $thread
+     *
+     * @return boolean True, if it's a new thread
+     */
+    function isNewThread(ThreadInterface $thread);
 
     /**
      * Returns the comment thread fully qualified class name

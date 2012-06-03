@@ -16,6 +16,7 @@ use FOS\CommentBundle\Model\CommentManager as BaseCommentManager;
 use FOS\CommentBundle\Model\ThreadInterface;
 use FOS\CommentBundle\Model\CommentInterface;
 use FOS\CommentBundle\Sorting\SortingFactory;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use DateTime;
 use InvalidArgumentException;
 
@@ -44,17 +45,20 @@ class CommentManager extends BaseCommentManager
     /**
      * Constructor.
      *
-     * @param DocumentManager         $dm
-     * @param string                  $class
-     * @param SortingFactory          $factory
+     * @param \Symfony\Component\EventDispatcher\EventDispatcherInterface $dispatcher
+     * @param \FOS\CommentBundle\Sorting\SortingFactory $factory
+     * @param \Doctrine\ODM\MongoDB\DocumentManager $dm
+     * @param string $class
      */
-    public function __construct(DocumentManager $dm, $class, SortingFactory $factory)
+    public function __construct(EventDispatcherInterface $dispatcher, SortingFactory $factory, DocumentManager $dm, $class)
     {
-        $this->dm         = $dm;
-        $this->repository = $dm->getRepository($class);
-        $this->class      = $dm->getClassMetadata($class)->name;
+        parent::__construct($dispatcher, $factory);
 
-        $this->setSortingFactory($factory);
+        $this->dm = $dm;
+        $this->repository = $dm->getRepository($class);
+
+        $metadata = $dm->getClassMetadata($class);
+        $this->class = $metadata->name;
     }
 
     /**
@@ -83,7 +87,7 @@ class CommentManager extends BaseCommentManager
             ->execute();
 
         if (null !== $sorterAlias) {
-            $sorter = $this->getSortingFactory()->getSorter($sorterAlias);
+            $sorter = $this->sortingFactory->getSorter($sorterAlias);
             $comments = $sorter->sortFlat($comments);
         }
 
@@ -110,7 +114,7 @@ class CommentManager extends BaseCommentManager
             return array();
         }
 
-        $sorter = $this->getSortingFactory()->getSorter($sorter);
+        $sorter = $this->sortingFactory->getSorter($sorter);
 
         $ignoreParents = $comments->getSingleResult()->getAncestors();
         return $this->organiseComments($comments, $sorter, $ignoreParents);
@@ -121,21 +125,9 @@ class CommentManager extends BaseCommentManager
      *
      * @param CommentInterface $comment
      */
-    public function addComment(CommentInterface $comment)
+    protected function doSaveComment(CommentInterface $comment)
     {
-        if (null !== $comment->getId()) {
-            throw new InvalidArgumentException('Can not add already saved comment');
-        }
-
-        if (null === $comment->getThread()) {
-            throw new InvalidArgumentException('The comment must have a thread');
-        }
-
-        $thread = $comment->getThread();
-        $thread->incrementNumComments(1);
-        $thread->setLastCommentAt(new DateTime());
-
-        $this->dm->persist($thread);
+        $this->dm->persist($comment->getThread());
         $this->dm->persist($comment);
         $this->dm->flush();
     }
@@ -148,6 +140,14 @@ class CommentManager extends BaseCommentManager
     public function findCommentById($id)
     {
         return $this->repository->find($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isNewComment(CommentInterface $comment)
+    {
+        return !$this->dm->getUnitOfWork()->isInIdentityMap($comment);
     }
 
     /**

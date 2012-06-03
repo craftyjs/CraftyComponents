@@ -34,7 +34,7 @@ class Locale extends \Locale
     /**
      * Returns the country names for a locale
      *
-     * @param  string $locale     The locale to use for the country names
+     * @param string $locale The locale to use for the country names
      *
      * @return array              The country names with their codes as keys
      *
@@ -51,14 +51,20 @@ class Locale extends \Locale
 
             $collator = new \Collator($locale);
             $countries = array();
+            $bundleCountries = $bundle->get('Countries') ?: array();
 
-            foreach ($bundle->get('Countries') as $code => $name) {
+            foreach ($bundleCountries as $code => $name) {
                 // Global countries (f.i. "America") have numeric codes
                 // Countries have alphabetic codes
                 // "ZZ" is the code for unknown country
                 if (ctype_alpha($code) && 'ZZ' !== $code) {
                     $countries[$code] = $name;
                 }
+            }
+
+            $fallbackLocale = self::getFallbackLocale($locale);
+            if (null !== $fallbackLocale) {
+                $countries = array_merge(self::getDisplayCountries($fallbackLocale), $countries);
             }
 
             $collator->asort($countries);
@@ -83,7 +89,7 @@ class Locale extends \Locale
     /**
      * Returns the language names for a locale
      *
-     * @param  string $locale     The locale to use for the language names
+     * @param string $locale The locale to use for the language names
      *
      * @return array              The language names with their codes as keys
      *
@@ -100,12 +106,18 @@ class Locale extends \Locale
 
             $collator = new \Collator($locale);
             $languages = array();
+            $bundleLanguages = $bundle->get('Languages') ?: array();
 
-            foreach ($bundle->get('Languages') as $code => $name) {
+            foreach ($bundleLanguages as $code => $name) {
                 // "mul" is the code for multiple languages
                 if ('mul' !== $code) {
                     $languages[$code] = $name;
                 }
+            }
+
+            $fallbackLocale = self::getFallbackLocale($locale);
+            if (null !== $fallbackLocale) {
+                $languages = array_merge(self::getDisplayLanguages($fallbackLocale), $languages);
             }
 
             $collator->asort($languages);
@@ -130,7 +142,7 @@ class Locale extends \Locale
     /**
      * Returns the locale names for a locale
      *
-     * @param  string $locale     The locale to use for the locale names
+     * @param string $locale The locale to use for the locale names
      * @return array              The locale names with their codes as keys
      * @throws RuntimeException   When the resource bundles cannot be loaded
      */
@@ -145,9 +157,15 @@ class Locale extends \Locale
 
             $collator = new \Collator($locale);
             $locales = array();
+            $bundleLocales = $bundle->get('Locales') ?: array();
 
-            foreach ($bundle->get('Locales') as $code => $name) {
+            foreach ($bundleLocales as $code => $name) {
                 $locales[$code] = $name;
+            }
+
+            $fallbackLocale = self::getFallbackLocale($locale);
+            if (null !== $fallbackLocale) {
+                $locales = array_merge(self::getDisplayLocales($fallbackLocale), $locales);
             }
 
             $collator->asort($locales);
@@ -167,5 +185,24 @@ class Locale extends \Locale
     static public function getLocales()
     {
         return array_keys(self::getDisplayLocales(self::getDefault()));
+    }
+
+    /**
+     * Returns the fallback locale for a given locale, if any
+     *
+     * @param $locale             The locale to find the fallback for
+     * @return string|null        The fallback locale, or null if no parent exists
+     */
+    static protected function getFallbackLocale($locale)
+    {
+        if ($locale === self::getDefault()) {
+            return null;
+        }
+
+        if (false === $pos = strrpos($locale, '_')) {
+            return self::getDefault();
+        }
+
+        return substr($locale, 0, $pos);
     }
 }

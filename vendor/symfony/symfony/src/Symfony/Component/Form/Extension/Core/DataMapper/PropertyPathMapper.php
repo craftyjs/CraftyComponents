@@ -32,7 +32,7 @@ class PropertyPathMapper implements DataMapperInterface
 
     /**
      * @param dataClass $data
-     * @param array $forms
+     * @param array     $forms
      *
      * @throws UnexpectedTypeException if the type of the data parameter is not supported
      */
@@ -77,7 +77,7 @@ class PropertyPathMapper implements DataMapperInterface
 
     public function mapFormToData(FormInterface $form, &$data)
     {
-        if ($form->getAttribute('property_path') !== null && $form->isSynchronized()) {
+        if ($form->getAttribute('property_path') !== null && $form->isSynchronized() && !$form->isReadOnly()) {
             $propertyPath = $form->getAttribute('property_path');
 
             // If the data is identical to the value in $data, we are

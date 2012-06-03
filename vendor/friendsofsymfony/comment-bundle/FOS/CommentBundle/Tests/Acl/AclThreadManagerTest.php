@@ -154,14 +154,14 @@ class AclThreadManagerTest extends \PHPUnit_Framework_TestCase
     public function testAddThread()
     {
         $this->realManager->expects($this->never())
-            ->method('addThread');
+            ->method('saveThread');
 
         $this->threadSecurity->expects($this->once())
             ->method('canCreate')
             ->will($this->returnValue(false));
 
         $manager = new AclThreadManager($this->realManager, $this->threadSecurity);
-        $manager->addThread($this->thread);
+        $manager->saveThread($this->thread);
     }
 
     public function testAddThreadCanCreate()
@@ -171,11 +171,16 @@ class AclThreadManagerTest extends \PHPUnit_Framework_TestCase
                 ->will($this->returnValue(true));
 
         $this->realManager->expects($this->once())
-                ->method('addThread')
+                ->method('saveThread')
                 ->with($this->thread);
 
+        $this->realManager->expects($this->once())
+                ->method('isNewThread')
+                ->with($this->thread)
+                ->will($this->returnValue(true));
+
         $manager = new AclThreadManager($this->realManager, $this->threadSecurity);
-        $manager->addThread($this->thread);
+        $manager->saveThread($this->thread);
     }
 
     public function testCreateThread()

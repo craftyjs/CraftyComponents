@@ -2,15 +2,16 @@
 
 namespace Knp\Component\Pager\Pagination;
 
-use Countable, Iterator;
+use Countable, Iterator, ArrayAccess;
 
-abstract class AbstractPagination implements PaginationInterface, Countable, Iterator
+abstract class AbstractPagination implements PaginationInterface, Countable, Iterator, ArrayAccess
 {
     protected $currentPageNumber;
     protected $numItemsPerPage;
     protected $items = array();
     protected $totalCount;
-    protected $alias;
+    protected $paginatorOptions;
+    protected $customParameters;
 
     /**
      * {@inheritDoc}
@@ -53,6 +54,16 @@ abstract class AbstractPagination implements PaginationInterface, Countable, Ite
     public function count()
     {
         return count($this->items);
+    }
+
+    public function setCustomParameters(array $parameters)
+    {
+        $this->customParameters = $parameters;
+    }
+
+    public function getCustomParameter($name)
+    {
+        return isset($this->customParameters[$name]) ? $this->customParameters[$name] : null;
     }
 
     /**
@@ -112,9 +123,9 @@ abstract class AbstractPagination implements PaginationInterface, Countable, Ite
     /**
      * {@inheritDoc}
      */
-    public function setAlias($paginationAlias)
+    public function setPaginatorOptions($options)
     {
-        $this->alias = $paginationAlias;
+        $this->paginatorOptions = $options;
     }
 
     /**
@@ -122,9 +133,9 @@ abstract class AbstractPagination implements PaginationInterface, Countable, Ite
      *
      * @return string
      */
-    public function getAlias()
+    public function getPaginatorOption($name)
     {
-        return $this->alias;
+        return isset($this->paginatorOptions[$name]) ? $this->paginatorOptions[$name] : null;
     }
 
     /**
@@ -146,5 +157,29 @@ abstract class AbstractPagination implements PaginationInterface, Countable, Ite
     public function getItems()
     {
         return $this->items;
+    }
+
+    public function offsetExists($offset)
+    {
+        return array_key_exists($offset, $this->items);
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->items[$offset];
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        if (null === $offset) {
+            $this->items[] = $value;
+        } else {
+            $this->items[$offset] = $value;
+        }
+    }
+
+    public function offsetUnset($offset)
+    {
+        unset($this->items[$offset]);
     }
 }

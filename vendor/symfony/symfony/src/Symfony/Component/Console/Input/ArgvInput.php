@@ -46,7 +46,7 @@ class ArgvInput extends Input
     /**
      * Constructor.
      *
-     * @param array           $argv An array of parameters from the CLI (in the argv format)
+     * @param array           $argv       An array of parameters from the CLI (in the argv format)
      * @param InputDefinition $definition A InputDefinition instance
      *
      * @api
@@ -77,7 +77,7 @@ class ArgvInput extends Input
     {
         $this->parsed = $this->tokens;
         while (null !== $token = array_shift($this->parsed)) {
-            if ('--' === substr($token, 0, 2)) {
+            if (0 === strpos($token, '--')) {
                 $this->parseLongOption($token);
             } elseif ('-' === $token[0]) {
                 $this->parseShortOption($token);
@@ -281,8 +281,8 @@ class ArgvInput extends Input
      * This method is to be used to introspect the input parameters
      * before they have been validated. It must be used carefully.
      *
-     * @param string|array $values The value(s) to look for in the raw parameters (can be an array)
-     * @param mixed $default The default value to return if no result is found
+     * @param string|array $values  The value(s) to look for in the raw parameters (can be an array)
+     * @param mixed        $default The default value to return if no result is found
      *
      * @return mixed The option value
      */

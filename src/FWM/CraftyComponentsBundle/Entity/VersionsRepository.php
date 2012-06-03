@@ -66,7 +66,7 @@ class VersionsRepository extends EntityRepository
         foreach(ArrayService::objectToArray(json_decode($componentData['componentFilesValue'])) as $value) {
             $tempFileContent[] = base64_decode($value);
         };
-        $file = implode(' ', $tempFileContent);
+        $file = implode("\n", $tempFileContent);
 
         $path = $request->server->get('DOCUMENT_ROOT').'/uploads/components/'.strtolower($componentData['name']).'-'.strtolower($versionType);
 

@@ -60,7 +60,7 @@ button.fos_comment_comment_reply_show_form {
     padding: 2px 5px;
     font-size: 0.8em;
 }
-div.fos_comment_comment_reply.replying button.fos_comment_comment_reply_show_form {
+div.fos_comment_comment_reply.fos_comment_replying button.fos_comment_comment_reply_show_form {
     display: none;
 }
 div.fos_comment_thread_comments {
@@ -90,6 +90,9 @@ form.fos_comment_comment_form textarea {
 form.fos_comment_comment_form.error textarea {
     border-color: red;
 }
+div.fos_comment_form_errors {
+    background: #ff0000;
+}
 div.fos_comment_submit {
     text-align: right;
 }
@@ -103,4 +106,10 @@ a.fos_comment_thread_feed {
     height: 16px;
     display: block;
     float: right;
+}
+div.fos_comment_comment_voting {
+    float: right;
+}
+div.fos_comment_comment_score {
+    display: inline-block;
 }

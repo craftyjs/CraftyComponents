@@ -492,6 +492,23 @@ class UnitOfWork implements PropertyChangedListener
                             $this->collectionDeletions[] = $orgValue;
                             $changeSet[$propName] = $orgValue; // Signal changeset, to-many assocs will be ignored.
                         }
+
+                        // Persistent collection was exchanged with the "originally"
+                        // created one. This can only mean it was cloned and replaced
+                        // on another entity.
+                        if ($actualValue instanceof PersistentCollection) {
+                            $owner = $actualValue->getOwner();
+                            if ($owner === null) { // cloned
+                                $actualValue->setOwner($entity, $assoc);
+                            } else if ($owner !== $entity) { // no clone, we have to fix
+                                if (!$actualValue->isInitialized()) {
+                                    $actualValue->initialize(); // we have to do this otherwise the cols share state
+                                }
+                                $newValue = clone $actualValue;
+                                $newValue->setOwner($entity, $assoc);
+                                $class->reflFields[$propName]->setValue($entity, $newValue);
+                            }
+                        }
                     }
                 } else if ($isChangeTrackingNotify) {
                     continue;
@@ -511,6 +528,15 @@ class UnitOfWork implements PropertyChangedListener
             $val = $class->reflFields[$field]->getValue($entity);
             if ($val !== null) {
                 $this->computeAssociationChanges($assoc, $val);
+                if (!isset($this->entityChangeSets[$oid]) &&
+                    $assoc['isOwningSide'] &&
+                    $assoc['type'] == ClassMetadata::MANY_TO_MANY &&
+                    $val instanceof PersistentCollection &&
+                    $val->isDirty()) {
+                    $this->entityChangeSets[$oid]   = array();
+                    $this->originalEntityData[$oid] = $actualData;
+                    $this->entityUpdates[$oid]      = $entity;
+                }
             }
         }
     }
@@ -1170,6 +1196,8 @@ class UnitOfWork implements PropertyChangedListener
         $className = $classMetadata->rootEntityName;
         if (isset($this->identityMap[$className][$idHash])) {
             unset($this->identityMap[$className][$idHash]);
+            unset($this->readOnlyObjects[$oid]);
+
             //$this->entityStates[$oid] = self::STATE_DETACHED;
             return true;
         }
@@ -1452,6 +1480,10 @@ class UnitOfWork implements PropertyChangedListener
                         $this->persistNew($class, $managedCopy);
                     } else {
                         throw new EntityNotFoundException;
+                    }
+                } else {
+                    if ($managedCopy instanceof Proxy && ! $managedCopy->__isInitialized__) {
+                        $managedCopy->__load();
                     }
                 }
             }
@@ -1863,6 +1895,7 @@ class UnitOfWork implements PropertyChangedListener
         $this->collectionDeletions =
         $this->collectionUpdates =
         $this->extraUpdates =
+        $this->readOnlyObjects =
         $this->orphanRemovals = array();
         if ($this->commitOrderCalculator !== null) {
             $this->commitOrderCalculator->clear();

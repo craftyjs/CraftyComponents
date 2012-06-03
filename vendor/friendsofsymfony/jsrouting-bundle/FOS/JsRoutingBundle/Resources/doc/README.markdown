@@ -9,6 +9,14 @@ Installation
 Add this bundle as a submodule:
 
     git submodule add git://github.com/FriendsOfSymfony/FOSJsRoutingBundle.git vendor/bundles/FOS/JsRoutingBundle
+    
+Or add the following lines in your `deps` file:
+
+``` ini
+[FOSJsRoutingBundle]
+	git=git://github.com/FriendsOfSymfony/FOSJsRoutingBundle.git
+	target=/bundles/FOS/JsRoutingBundle
+```
 
 Register the namespace in `app/autoload.php`:
 
@@ -65,6 +73,15 @@ Imagine some route definitions:
         defaults: { _controller: AcmeBlogBundle:Blog:index, page: 1 }
         options:
             expose: true
+
+Or with annotations:
+   
+    # src/Acme/DemoBundle/Controller/DefaultController.php
+    /**
+     * @Route ("/foo/{id}/bar", name="my_route_to_expose", options={"expose"=true}))
+     */
+    public function exposedAction($foo)
+
 
 You can do:
 

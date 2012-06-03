@@ -79,7 +79,7 @@ class AclCommentManager implements CommentManagerInterface
     /**
      * {@inheritDoc}
      */
-    public function findCommentsByThread(ThreadInterface $thread, $depth = nul, $sorterAlias = null)
+    public function findCommentsByThread(ThreadInterface $thread, $depth = null, $sorterAlias = null)
     {
         $comments = $this->realManager->findCommentsByThread($thread, $depth, $sorterAlias);
 
@@ -109,18 +109,33 @@ class AclCommentManager implements CommentManagerInterface
     /**
      * {@inheritDoc}
      */
-    public function addComment(CommentInterface $comment, CommentInterface $parent = null)
+    public function saveComment(CommentInterface $comment)
     {
         if (!$this->threadAcl->canView($comment->getThread())) {
             throw new AccessDeniedException();
         }
 
-        if (!$this->commentAcl->canReply($parent)) {
+        if (!$this->commentAcl->canReply($comment->getParent())) {
             throw new AccessDeniedException();
         }
 
-        $this->realManager->addComment($comment, $parent);
-        $this->commentAcl->setDefaultAcl($comment);
+        $newComment = $this->isNewComment($comment);
+
+        if (!$newComment && !$this->commentAcl->canEdit($comment)) {
+            throw new AccessDeniedException();
+        }
+
+        if (($comment::STATE_DELETED === $comment->getState() || $comment::STATE_DELETED === $comment->getPreviousState())
+            && !$this->commentAcl->canDelete($comment)
+        ) {
+            throw new AccessDeniedException();
+        }
+
+        $this->realManager->saveComment($comment);
+
+        if ($newComment) {
+            $this->commentAcl->setDefaultAcl($comment);
+        }
     }
 
     /**
@@ -143,6 +158,14 @@ class AclCommentManager implements CommentManagerInterface
     public function createComment(ThreadInterface $thread, CommentInterface $parent = null)
     {
         return $this->realManager->createComment($thread, $parent);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isNewComment(CommentInterface $comment)
+    {
+        return $this->realManager->isNewComment($comment);
     }
 
     /**

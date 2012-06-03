@@ -185,7 +185,7 @@ class EntityChoiceList extends ArrayChoiceList
             } else {
                 // Otherwise expect a __toString() method in the entity
                 if (!method_exists($entity, '__toString')) {
-                    throw new FormException('Entities passed to the choice field must have a "__toString()" method defined (or you can also override the "property" option).');
+                    throw new FormException(sprintf('Entity "%s" passed to the choice field must have a "__toString()" method defined (or you can also override the "property" option).', $this->class));
                 }
 
                 $value = (string) $entity;
@@ -251,7 +251,7 @@ class EntityChoiceList extends ArrayChoiceList
      * If they have single identifiers, they are either fetched from the
      * internal entity cache (if filled) or loaded from the database.
      *
-     * @param  string $key The choice key (for entities with composite
+     * @param string $key The choice key (for entities with composite
      *                     identifiers) or entity ID (for entities with single
      *                     identifiers)
      *
@@ -288,7 +288,7 @@ class EntityChoiceList extends ArrayChoiceList
     /**
      * Returns the \ReflectionProperty instance for a property of the underlying class.
      *
-     * @param  string $property    The name of the property
+     * @param string $property The name of the property
      *
      * @return \ReflectionProperty The reflection instance
      */
@@ -309,7 +309,7 @@ class EntityChoiceList extends ArrayChoiceList
      * be persisted or added to the identity map before. Otherwise an
      * exception is thrown.
      *
-     * @param  object $entity The entity for which to get the identifier
+     * @param object $entity The entity for which to get the identifier
      *
      * @return array          The identifier values
      *

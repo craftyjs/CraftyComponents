@@ -28,7 +28,7 @@ class YamlDumper extends Dumper
     /**
      * Dumps the service container as an YAML string.
      *
-     * @param  array  $options An array of options
+     * @param array $options An array of options
      *
      * @return string A YAML string representing of the service container
      *
@@ -42,7 +42,7 @@ class YamlDumper extends Dumper
     /**
      * Adds a service
      *
-     * @param string $id
+     * @param string     $id
      * @param Definition $definition
      *
      * @return string

@@ -13,7 +13,11 @@ namespace FOS\CommentBundle\Twig;
 
 use FOS\CommentBundle\Acl\CommentAclInterface;
 use FOS\CommentBundle\Model\CommentInterface;
+use FOS\CommentBundle\Model\ThreadInterface;
 use FOS\CommentBundle\Model\VotableCommentInterface;
+use FOS\CommentBundle\Model\RawCommentInterface;
+use FOS\CommentBundle\Acl\ThreadAclInterface;
+use FOS\CommentBundle\Acl\VoteAclInterface;
 
 /**
  * Extends Twig to provide some helper functions for the CommentBundle.
@@ -23,17 +27,35 @@ use FOS\CommentBundle\Model\VotableCommentInterface;
 class CommentExtension extends \Twig_Extension
 {
     protected $commentAcl;
+    protected $voteAcl;
+    protected $threadAcl;
 
-    public function __construct(CommentAclInterface $commentAcl = null)
+    public function __construct(CommentAclInterface $commentAcl = null, VoteAclInterface $voteAcl = null, ThreadAclInterface $threadAcl = null)
     {
         $this->commentAcl = $commentAcl;
+        $this->voteAcl    = $voteAcl;
+        $this->threadAcl  = $threadAcl;
     }
 
     public function getTests()
     {
         return array(
-            'fos_comment_votable'        => new \Twig_Test_Method($this, 'isVotable'),
+            'fos_comment_deleted'         => new \Twig_Test_Method($this, 'isCommentDeleted'),
+            'fos_comment_votable'         => new \Twig_Test_Method($this, 'isVotable'),
+            'fos_comment_raw'             => new \Twig_Test_Method($this, 'isRawComment'),
         );
+    }
+
+    /**
+     * Check if the state of the comment is deleted.
+     *
+     * @param CommentInterface $comment
+     *
+     * @return bool
+     */
+    public function isCommentDeleted(CommentInterface $comment)
+    {
+        return $comment->getState() === $comment::STATE_DELETED;
     }
 
     /**
@@ -44,17 +66,23 @@ class CommentExtension extends \Twig_Extension
      */
     public function isVotable($value)
     {
-        if (!is_object($value)) {
-            return false;
-        }
-
         return ($value instanceof VotableCommentInterface);
+    }
+
+    public function isRawComment($comment)
+    {
+        return ($comment instanceof RawCommentInterface);
     }
 
     public function getFunctions()
     {
         return array(
-            'fos_comment_can_comment' => new \Twig_Function_Method($this, 'canComment'),
+            'fos_comment_can_comment'        => new \Twig_Function_Method($this, 'canComment'),
+            'fos_comment_can_vote'           => new \Twig_Function_Method($this, 'canVote'),
+            'fos_comment_can_delete_comment' => new \Twig_Function_Method($this, 'canDeleteComment'),
+            'fos_comment_can_edit_comment'   => new \Twig_Function_Method($this, 'canEditComment'),
+            'fos_comment_can_edit_thread'    => new \Twig_Function_Method($this, 'canEditThread'),
+            'fos_comment_can_comment_thread' => new \Twig_Function_Method($this, 'canCommentThread'),
         );
     }
 
@@ -68,6 +96,12 @@ class CommentExtension extends \Twig_Extension
      */
     public function canComment(CommentInterface $comment = null)
     {
+        if (null !== $comment
+            && null !== $comment->getThread()
+            && !$comment->getThread()->isCommentable()) {
+            return false;
+        }
+
         if (null === $this->commentAcl) {
             return true;
         }
@@ -77,6 +111,97 @@ class CommentExtension extends \Twig_Extension
         }
 
         return $this->commentAcl->canReply($comment);
+    }
+
+    /**
+     * Checks if the current user is able to delete a comment.
+     *
+     * @param CommentInterface $comment
+     *
+     * @return bool
+     */
+    public function canDeleteComment(CommentInterface $comment)
+    {
+        if (null === $this->commentAcl) {
+            return true;
+        }
+
+        return $this->commentAcl->canDelete($comment);
+    }
+
+    /**
+     * Checks if the current user is able to edit a comment.
+     *
+     * @param CommentInterface $comment
+     *
+     * @return bool If the user is able to comment
+     */
+    public function canEditComment(CommentInterface $comment)
+    {
+        if (!$comment->getThread()->isCommentable()) {
+            return false;
+        }
+
+        if (null === $this->commentAcl) {
+            return true;
+        }
+
+        return $this->commentAcl->canEdit($comment);
+    }
+
+    /**
+     * Checks if the comment is Votable and that the user has
+     * permission to vote.
+     *
+     * @param \FOS\CommentBundle\Model\CommentInterface $comment
+     * @return bool
+     */
+    public function canVote(CommentInterface $comment)
+    {
+        if (!$comment instanceof VotableCommentInterface) {
+            return false;
+        }
+
+        if (null === $this->voteAcl) {
+            return true;
+        }
+
+        if (null !== $this->commentAcl && !$this->commentAcl->canView($comment)) {
+            return false;
+        }
+
+        return $this->voteAcl->canCreate();
+    }
+
+    /**
+     * Checks if the thread can be edited.
+     *
+     * Will use the specified ACL, or return true otherwise.
+     *
+     * @param ThreadInterface $thread
+     *
+     * @return bool
+     */
+    public function canEditThread(ThreadInterface $thread)
+    {
+        if (null === $this->threadAcl) {
+            return true;
+        }
+
+        return $this->threadAcl->canEdit($thread);
+    }
+
+    /**
+     * Checks if the thread can be commented.
+     *
+     * @param ThreadInterface $thread
+     *
+     * @return bool
+     */
+    public function canCommentThread(ThreadInterface $thread)
+    {
+        return $thread->isCommentable()
+            && (null === $this->commentAcl || $this->commentAcl->canCreate());
     }
 
     /**

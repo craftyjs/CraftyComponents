@@ -38,7 +38,7 @@ class Parser
     /**
      * Parses a YAML string to a PHP value.
      *
-     * @param  string $value A YAML string
+     * @param string $value A YAML string
      *
      * @return mixed  A PHP value
      *
@@ -114,7 +114,7 @@ class Parser
                 }
 
                 if ('<<' === $key) {
-                    if (isset($values['value']) && '*' === substr($values['value'], 0, 1)) {
+                    if (isset($values['value']) && 0 === strpos($values['value'], '*')) {
                         $isInPlace = substr($values['value'], 1);
                         if (!array_key_exists($isInPlace, $this->refs)) {
                             throw new ParseException(sprintf('Reference "%s" does not exist.', $isInPlace), $this->getRealCurrentLineNb() + 1, $this->currentLine);
@@ -188,7 +188,7 @@ class Parser
 
                     if (is_array($value)) {
                         $first = reset($value);
-                        if (is_string($first) && '*' === substr($first, 0, 1)) {
+                        if (is_string($first) && 0 === strpos($first, '*')) {
                             $data = array();
                             foreach ($value as $alias) {
                                 $data[] = $this->refs[substr($alias, 1)];
@@ -339,7 +339,7 @@ class Parser
     /**
      * Parses a YAML value.
      *
-     * @param  string $value A YAML value
+     * @param string $value A YAML value
      *
      * @return mixed  A PHP value
      *
@@ -347,7 +347,7 @@ class Parser
      */
     private function parseValue($value)
     {
-        if ('*' === substr($value, 0, 1)) {
+        if (0 === strpos($value, '*')) {
             if (false !== $pos = strpos($value, '#')) {
                 $value = substr($value, 1, $pos - 2);
             } else {
@@ -380,9 +380,9 @@ class Parser
     /**
      * Parses a folded scalar.
      *
-     * @param  string  $separator   The separator that was used to begin this folded scalar (| or >)
-     * @param  string  $indicator   The indicator that was used to begin this folded scalar (+ or -)
-     * @param  integer $indentation The indentation that was used to begin this folded scalar
+     * @param string  $separator   The separator that was used to begin this folded scalar (| or >)
+     * @param string  $indicator   The indicator that was used to begin this folded scalar (+ or -)
+     * @param integer $indentation The indentation that was used to begin this folded scalar
      *
      * @return string  The text value
      */
@@ -515,7 +515,7 @@ class Parser
     /**
      * Cleanups a YAML string to be parsed.
      *
-     * @param  string $value The input YAML string
+     * @param string $value The input YAML string
      *
      * @return string A cleaned up YAML string
      */

@@ -22,6 +22,18 @@ class Paginator
     protected $eventDispatcher;
 
     /**
+     * Default options of paginator
+     *
+     * @var array
+     */
+    protected $defaultOptions = array(
+        'pageParameterName' => 'page',
+        'sortFieldParameterName' => 'sort',
+        'sortDirectionParameterName' => 'direction',
+        'distinct' => true
+    );
+
+    /**
      * Initialize paginator with event dispatcher
      * Can be a service in concept. By default it
      * hooks standard pagination subscriber
@@ -36,6 +48,17 @@ class Paginator
             $this->eventDispatcher->addSubscriber(new PaginationSubscriber);
             $this->eventDispatcher->addSubscriber(new SortableSubscriber);
         }
+    }
+
+    /**
+     * Override the default paginator options
+     * to be reused for paginations
+     *
+     * @param array $options
+     */
+    public function setDefaultPaginatorOptions(array $options)
+    {
+        $this->defaultOptions = array_merge($this->defaultOptions, $options);
     }
 
     /**
@@ -61,11 +84,7 @@ class Paginator
             throw new \LogicException("Invalid item per page number, must be a positive number");
         }
         $offset = abs($page - 1) * $limit;
-        $defaultOptions = array(
-            'alias' => '',
-            'distinct' => true
-        );
-        $options = array_merge($defaultOptions, $options);
+        $options = array_merge($this->defaultOptions, $options);
         // before pagination start
         $beforeEvent = new Event\BeforeEvent($this->eventDispatcher);
         $this->eventDispatcher->dispatch('knp_pager.before', $beforeEvent);
@@ -87,10 +106,11 @@ class Paginator
         }
         // pagination class can be diferent, with diferent rendering methods
         $paginationView = $paginationEvent->getPagination();
+        $paginationView->setCustomParameters($itemsEvent->getCustomPaginationParameters());
         $paginationView->setCurrentPageNumber($page);
         $paginationView->setItemNumberPerPage($limit);
         $paginationView->setTotalItemCount($itemsEvent->count);
-        $paginationView->setAlias($options['alias']);
+        $paginationView->setPaginatorOptions($options);
         $paginationView->setItems($itemsEvent->items);
 
         // after

@@ -34,7 +34,7 @@ class ArrayNode extends BaseNode implements PrototypeNodeInterface
     /**
      * Constructor.
      *
-     * @param string $name The Node's name
+     * @param string        $name   The Node's name
      * @param NodeInterface $parent The node parent
      */
     public function __construct($name, NodeInterface $parent = null)
@@ -267,7 +267,7 @@ class ArrayNode extends BaseNode implements PrototypeNodeInterface
         if (count($value) && !$this->ignoreExtraKeys) {
             $msg = sprintf('Unrecognized options "%s" under "%s"', implode(', ', array_keys($value)), $this->getPath());
             $ex = new InvalidConfigurationException($msg);
-            $ex->setPath($this->getPath().'.'.reset($value));
+            $ex->setPath($this->getPath());
 
             throw $ex;
         }
@@ -301,7 +301,7 @@ class ArrayNode extends BaseNode implements PrototypeNodeInterface
     /**
      * Merges values together.
      *
-     * @param mixed $leftSide The left side to merge.
+     * @param mixed $leftSide  The left side to merge.
      * @param mixed $rightSide The right side to merge.
      *
      * @return mixed The merged values

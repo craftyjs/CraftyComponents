@@ -193,27 +193,6 @@ class DateTimeTypeTest extends LocalizedTestCase
         $this->assertEquals('2010-06-02 03:04:00', $form->getClientData());
     }
 
-    /**
-     * @expectedException Symfony\Component\Form\Exception\FormException
-     */
-    public function testDifferentWidgets()
-    {
-        $form = $this->factory->create('datetime', null, array(
-            'date_widget' => 'single_text',
-            'time_widget' => 'choice',
-        ));
-    }
-
-    /**
-     * @expectedException Symfony\Component\Form\Exception\FormException
-     */
-    public function testDefinedOnlyOneWidget()
-    {
-        $form = $this->factory->create('datetime', null, array(
-            'date_widget' => 'single_text',
-        ));
-    }
-
     public function testSubmit_differentPattern()
     {
         $form = $this->factory->create('datetime', null, array(
@@ -254,5 +233,23 @@ class DateTimeTypeTest extends LocalizedTestCase
         $this->assertFalse($form->isValid());
         $this->assertEquals(array(new FormError('Customized invalid message', array())), $form['date']->getErrors());
         $this->assertEquals(array(new FormError('Customized invalid message', array())), $form['time']->getErrors());
+    }
+
+    public function testSubmit_invalidDateTimeSingleText()
+    {
+        $form = $this->factory->create('datetime', null, array(
+            'data_timezone' => 'UTC',
+            'user_timezone' => 'UTC',
+            'input' => 'datetime',
+            'widget' => 'single_text',
+            'invalid_message' => 'Customized invalid message',
+        ));
+
+        $form->bind('2012-04-31 03:04:05');
+
+        $this->assertFalse($form->isValid());
+        $this->assertNull($form->getData());
+        $this->assertEquals('2012-04-31 03:04:05', $form->getClientData());
+        $this->assertEquals(array(new FormError('Customized invalid message', array())), $form->getErrors());
     }
 }

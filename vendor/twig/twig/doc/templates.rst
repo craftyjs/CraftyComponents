@@ -54,6 +54,8 @@ Many IDEs support syntax highlighting and auto-completion for Twig:
 * *Sublime Text* via the `Twig bundle`_
 * *GtkSourceView* via the `Twig language definition`_ (used by gedit and other projects)
 * *Coda* and *SubEthaEdit* via the `Twig syntax mode`_
+* *Coda 2* via the `other Twig syntax mode`_
+* *Komodo* and *Komodo Edit* via the Django highlight/syntax check mode
 
 Variables
 ---------
@@ -78,7 +80,9 @@ properties of a PHP object, or items of a PHP array), or the so-called
     variable but the print statement. If you access variables inside tags
     don't put the braces around.
 
-If a variable or attribute does not exist you will get back a ``null`` value.
+If a variable or attribute does not exist, you will get back a ``null`` value
+when the ``strict_variables`` option is set to ``false``, otherwise Twig will
+throw an error (see :ref:`environment options<environment_options>`).
 
 .. sidebar:: Implementation
 
@@ -292,8 +296,8 @@ skeleton document that you might use for a simple two-column page:
         </body>
     </html>
 
-In this example, the :doc:`{% block %}<tags/block>` tags define four blocks
-that child templates can fill in. All the ``block`` tag does is to tell the
+In this example, the :doc:`block<tags/block>` tags define four blocks that
+child templates can fill in. All the ``block`` tag does is to tell the
 template engine that a child template may override those portions of the
 template.
 
@@ -317,10 +321,10 @@ A child template might look like this:
         </p>
     {% endblock %}
 
-The :doc:`{% extends %}<tags/extends>` tag is the key here. It tells the
-template engine that this template "extends" another template. When the
-template system evaluates this template, first it locates the parent. The
-extends tag should be the first tag in the template.
+The :doc:`extends<tags/extends>` tag is the key here. It tells the template
+engine that this template "extends" another template. When the template system
+evaluates this template, first it locates the parent. The extends tag should
+be the first tag in the template.
 
 Note that since the child template doesn't define the ``footer`` block, the
 value from the parent template is used instead.
@@ -412,11 +416,10 @@ Macros
 ------
 
 Macros are comparable with functions in regular programming languages. They
-are useful to put often used HTML idioms into reusable elements to not repeat
-yourself.
+are useful to reuse often used HTML fragments to not repeat yourself.
 
-A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small
-example of a macro that renders a form element:
+A macro is defined via the :doc:`macro<tags/macro>` tag. Here is a small example
+(subsequently called ``forms.html``) of a macro that renders a form element:
 
 .. code-block:: jinja
 
@@ -424,8 +427,8 @@ example of a macro that renders a form element:
         <input type="{{ type|default('text') }}" name="{{ name }}" value="{{ value|e }}" size="{{ size|default(20) }}" />
     {% endmacro %}
 
-Macros can be defined in any template, and need to be "imported" before being
-used via the :doc:`import<tags/import>` tag:
+Macros can be defined in any template, and need to be "imported" via the
+:doc:`import<tags/import>` tag before being used:
 
 .. code-block:: jinja
 
@@ -433,20 +436,19 @@ used via the :doc:`import<tags/import>` tag:
 
     <p>{{ forms.input('username') }}</p>
 
-Alternatively you can import names from the template into the current
-namespace via the :doc:`from<tags/from>` tag:
+Alternatively, you can import individual macro names from a template into the
+current namespace via the :doc:`from<tags/from>` tag and optionally alias them:
 
 .. code-block:: jinja
 
-    {% from 'forms.html' import input as input_field, textarea %}
+    {% from 'forms.html' import input as input_field %}
 
     <dl>
         <dt>Username</dt>
         <dd>{{ input_field('username') }}</dd>
         <dt>Password</dt>
-        <dd>{{ input_field('password', type='password') }}</dd>
+        <dd>{{ input_field('password', '', 'password') }}</dd>
     </dl>
-    <p>{{ textarea('comment') }}</p>
 
 Expressions
 -----------
@@ -457,9 +459,9 @@ even if you're not working with PHP you should feel comfortable with it.
 .. note::
 
     The operator precedence is as follows, with the lowest-precedence
-    operators listed first: ``&``, ``^``, ``|``, ``or``, ``and``, ``==``,
-    ``!=``, ``<``, ``>``, ``>=``, ``<=``, ``in``, ``..``, ``+``, ``-``, ``~``,
-    ``*``, ``/``, ``//``, ``%``, ``is``, and ``**``.
+    operators listed first: ``b-and``, ``b-xor``, ``b-or``, ``or``, ``and``,
+    ``==``, ``!=``, ``<``, ``>``, ``>=``, ``<=``, ``in``, ``..``, ``+``,
+    ``-``, ``~``, ``*``, ``/``, ``//``, ``%``, ``is``, and ``**``.
 
 Literals
 ~~~~~~~~
@@ -552,6 +554,10 @@ You can combine multiple expressions with the following operators:
 
 * ``(expr)``: Groups an expression.
 
+.. note::
+
+    Twig also support bitwise operators (``b-and``, ``b-xor``, and ``b-or``).
+
 Comparisons
 ~~~~~~~~~~~
 
@@ -605,7 +611,7 @@ Tests can accept arguments too:
 
     {% if loop.index is divisibleby(3) %}
 
-Tests can be negated by using the ``not in`` operator:
+Tests can be negated by using the ``is not`` operator:
 
 .. code-block:: jinja
 
@@ -708,7 +714,8 @@ Twig can be easily extended.
 If you are looking for new tags, filters, or functions, have a look at the Twig official
 `extension repository`_.
 
-If you want to create your own, read :doc:`extensions`.
+If you want to create your own, read the :ref:`Creating an
+Extension<creating_extensions>` chapter.
 
 .. _`Twig bundle`:              https://github.com/Anomareh/PHP-Twig.tmbundle
 .. _`Jinja syntax plugin`:      http://jinja.pocoo.org/2/documentation/integration
@@ -717,3 +724,4 @@ If you want to create your own, read :doc:`extensions`.
 .. _`Twig language definition`: https://github.com/gabrielcorpse/gedit-twig-template-language
 .. _`extension repository`:     http://github.com/fabpot/Twig-extensions
 .. _`Twig syntax mode`:         https://github.com/bobthecow/Twig-HTML.mode
+.. _`other Twig syntax mode`:   https://github.com/muxx/Twig-HTML.mode

@@ -75,12 +75,11 @@ interface CommentManagerInterface
     function findCommentTreeByCommentId($commentId, $sorter = null);
 
     /**
-     * Adds a comment in a thread.
+     * Saves a comment.
      *
      * @param CommentInterface $comment
-     * @param CommentInterface $parent Only used when replying to a specific CommentInterface
      */
-    function addComment(CommentInterface $comment);
+    function saveComment(CommentInterface $comment);
 
     /**
      * Find one comment by its ID.
@@ -95,6 +94,15 @@ interface CommentManagerInterface
      * @return Comment
      */
     function createComment(ThreadInterface $thread, CommentInterface $comment = null);
+
+    /**
+     * Checks if the comment was already persisted before, or if it's a new one.
+     *
+     * @param CommentInterface $comment
+     *
+     * @return boolean True, if it's a new comment
+     */
+    function isNewComment(CommentInterface $comment);
 
     /**
      * Returns the comment fully qualified class name.

@@ -1,13 +1,32 @@
 # Intro to KnpPaginatorBundle
 
+**SEO** friendly Symfony2 paginator to paginate everything
+
 Generally this bundle is based on [Knp Pager component][knp_component_pager]. This
-component introduces a diferent way for pagination handling. You can read more about the
+component introduces a different way for pagination handling. You can read more about the
 internal logic on the given documentation link.
 
 **Note:** Keep **knp-components** in sync with this bundle. If you want to use 
-older version of KnpPaginatorBundle - use **v1.0** tag in the repository
+older version of KnpPaginatorBundle - use **v1.0** tag in the repository which is
+suitable to paginate **ODM mongodb** and **ORM 2.0** queries
 
 ## Latest updates
+
+**2012-03-23**
+
+- Changed the behavior of customization for query parameters. Etc. now there is no more **alias**
+for paginations. Instead it will use organized parameter names, which can be set for each pagination
+as different or configured in default global scope, see the [documentation](http://github.com/KnpLabs/KnpPaginatorBundle/blob/master/README.md#configuration)
+and [upgrade
+guide](http://github.com/KnpLabs/KnpPaginatorBundle/blob/master/Resources/doc/upgrade_to_2.2.md)
+make sure you use **twig at least version 1.5**
+
+- If you do not wish to migrate to these new changes. Checkout paginator bundle at **v2.1** tag and
+komponents at **v1.0**
+
+**2012-03-02**
+
+- Added support for [Solarium](http://solarium-project.org), a PHP library that handles [Solr](http://lucene.apache.org/solr/) search.
 
 **2011-12-16**
 
@@ -28,9 +47,9 @@ to github.com/**KnpLabs**/KnpPaginatorBundle.git.
 
 ## Requirements:
 
-- Knp pager component
-- For now KnpPaginatorBundle's master is only compatible with symfony's master branch (2.1 version).  
-Use the **v1.0** tag of KnpPaginatorBundle if you have to stay compatible with symfony 2.0.
+- Knp pager component **>=1.1**
+- KnpPaginatorBundle's master compatible with symfony (**>=2.0** versions).
+- Twig **>=1.5** version is required if you use twig templating engine
 
 ## Features:
 
@@ -40,7 +59,7 @@ Use the **v1.0** tag of KnpPaginatorBundle if you have to stay compatible with s
 - Separation of conserns, paginator is responsible for generating the pagination view only,
 pagination view - for representation purposes.
 
-**Notice:** using multiple paginators requires setting the **alias** in order to keep non
+**Note:** using multiple paginators requires setting the **alias** in order to keep non
 conflicting parameters. Also it gets quite complicated with a twig template, since hash arrays cannot use
 variables as keys.
 
@@ -69,20 +88,34 @@ Or if you want to clone the repos:
     # Install knp paginator bundle
     git clone git://github.com/KnpLabs/KnpPaginatorBundle.git vendor/bundles/Knp/Bundle/PaginatorBundle
 
+Or if you use [composer](http://packagist.org)
+
+    {
+        require: {
+            "knplabs/knp-paginator-bundle": "dev-master"
+        }
+    }
+
+<a name="configuration"></a>
 
 ### Configuration example
 
-Is it not enough symfony2 configuration? You can override default templates using parameters
+You can configure default query parameter names and templates
 
 ``` yaml
-// File: app/configs/parameters.yml
-
-parameters:
-  knp_paginator.template.pagination: MyBundle:Pagination:pagination.html.twig
-  knp_paginator.template.sortable:   MyBundle:Pagination:sortable.html.twig
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: KnpPaginatorBundle:Pagination:sliding.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
 ```
 
-### Add the namespaces to your autoloader
+### Add the namespaces to your autoloader unless you are using composer
 
 ``` php
 <?php
@@ -120,6 +153,9 @@ Currently paginator can paginate:
 - Doctrine\ORM\QueryBuilder
 - Doctrine\ODM\MongoDB\Query\Query
 - Doctrine\ODM\MongoDB\Query\Builder
+- Doctrine\Common\Collection\ArrayCollection - any doctrine relation collection including
+- ModelCriteria - Propel ORM query
+- array with Solarium_Client and Solarium_Query_Select as elements
 
 ``` php
 <?php
@@ -165,3 +201,4 @@ return compact('pagination');
 [knp_component_pager]: https://github.com/KnpLabs/knp-components/blob/master/doc/pager/intro.md "Knp Pager component introduction"
 [doc_custom_pagination_subscriber]: https://github.com/KnpLabs/KnpPaginatorBundle/tree/master/Resources/doc/custom_pagination_subscribers.md "Custom pagination subscribers"
 [doc_templates]: https://github.com/KnpLabs/KnpPaginatorBundle/tree/master/Resources/doc/templates.md "Customizing Pagination templates"
+

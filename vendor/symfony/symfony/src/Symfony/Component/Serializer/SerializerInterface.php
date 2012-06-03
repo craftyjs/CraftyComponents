@@ -23,7 +23,7 @@ interface SerializerInterface
     /**
      * Serializes data in the appropriate format
      *
-     * @param mixed $data any data
+     * @param mixed  $data   any data
      * @param string $format format name
      * @return string
      */
@@ -32,7 +32,7 @@ interface SerializerInterface
     /**
      * Deserializes data into the given type.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $type
      * @param string $format
      */
@@ -41,7 +41,7 @@ interface SerializerInterface
     /**
      * Normalizes any data into a set of arrays/scalars
      *
-     * @param mixed $data data to normalize
+     * @param mixed  $data   data to normalize
      * @param string $format format name, present to give the option to normalizers to act differently based on formats
      * @return array|scalar
      */
@@ -50,7 +50,7 @@ interface SerializerInterface
     /**
      * Denormalizes data into the given type.
      *
-     * @param mixed $data
+     * @param mixed  $data
      * @param string $type
      * @param string $format
      * @return mixed
@@ -60,7 +60,7 @@ interface SerializerInterface
     /**
      * Encodes data into the given format
      *
-     * @param mixed $data data to encode
+     * @param mixed  $data   data to encode
      * @param string $format format name
      * @return array|scalar
      */
@@ -69,7 +69,7 @@ interface SerializerInterface
     /**
      * Decodes a string from the given format back into PHP data
      *
-     * @param string $data data to decode
+     * @param string $data   data to decode
      * @param string $format format name
      * @return mixed
      */

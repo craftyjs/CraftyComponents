@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2012 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -12,7 +12,6 @@
 namespace Assetic\Factory;
 
 use Assetic\Asset\AssetCollection;
-use Assetic\Asset\AssetCollectionInterface;
 use Assetic\Asset\AssetInterface;
 use Assetic\Asset\AssetReference;
 use Assetic\Asset\FileAsset;
@@ -213,8 +212,10 @@ class AssetFactory
         // output --> target url
         $asset->setTargetPath(str_replace('*', $options['name'], $options['output']));
 
-        // apply workers and return
-        return $this->applyWorkers($asset);
+        // apply workers
+        $this->processAsset($asset);
+
+        return $asset;
     }
 
     public function generateAssetName($inputs, $filters, $options = array())
@@ -273,9 +274,9 @@ class AssetFactory
         }
     }
 
-    protected function createAssetCollection(array $assets = array())
+    protected function createAssetCollection()
     {
-        return new AssetCollection($assets);
+        return new AssetCollection();
     }
 
     protected function createAssetReference($name)
@@ -312,34 +313,26 @@ class AssetFactory
     }
 
     /**
-     * Filters an asset collection through the factory workers.
+     * Filters an asset through the factory workers.
      *
-     * Each leaf asset will be processed first, followed by the asset
-     * collection itself.
+     * Each leaf asset will be processed first if the asset is traversable,
+     * followed by the asset itself.
      *
-     * @param AssetCollectionInterface $asset An asset collection
+     * @param AssetInterface $asset An asset
      */
-    private function applyWorkers(AssetCollectionInterface $asset)
+    private function processAsset(AssetInterface $asset)
     {
-        foreach ($asset as $leaf) {
-            foreach ($this->workers as $worker) {
-                $retval = $worker->process($leaf);
-
-                if ($retval instanceof AssetInterface && $leaf !== $retval) {
-                    $asset->replaceLeaf($leaf, $retval);
+        if ($asset instanceof \Traversable) {
+            foreach ($asset as $leaf) {
+                foreach ($this->workers as $worker) {
+                    $worker->process($leaf);
                 }
             }
         }
 
         foreach ($this->workers as $worker) {
-            $retval = $worker->process($asset);
-
-            if ($retval instanceof AssetInterface) {
-                $asset = $retval;
-            }
+            $worker->process($asset);
         }
-
-        return $asset instanceof AssetCollectionInterface ? $asset : $this->createAssetCollection(array($asset));
     }
 
     static private function isAbsolutePath($path)

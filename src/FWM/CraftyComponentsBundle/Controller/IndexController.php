@@ -171,18 +171,25 @@ class IndexController extends Controller
             $tempMaxVersion     = 0;
 
             foreach ($component->getVersions() as $value){
+                if (
+                    ($branch === false && (strpos($value->getValue(), '-') !== false)) ||
+                    ($branch != false && (strpos($value->getValue(), '-'.$branch) === false))
+                ) {
+                    continue;
+                }
+
                 $release = 'RELEASE';            
-                if ($branch != null) {
+                if ($branch != false) {
                     $release = $release.'-'.$branch; 
                 }
 
                 $dev = 'DEV';
-                if ($branch != null) {
+                if ($branch != false) {
                     $dev = $dev.'-'.$branch; 
                 }
 
                 $valueVersion = $value->getValue();
-                if ($branch) {
+                if ($branch != false) {
                     $valueVersion = str_replace('-'.$branch, '', $valueVersion);
                 }
 
@@ -190,7 +197,6 @@ class IndexController extends Controller
                     if (version_compare($valueVersion, $tempMaxVersion, '>')){
                         $tempMaxVersion = $valueVersion;
                         $latestVersion = $value;
-                        print_r($valueVersion.' > '.$tempMaxVersion);
                     }
                 }
 
@@ -198,7 +204,7 @@ class IndexController extends Controller
                     $oldDevValue = $value->getFileContent();
                     $latestDevVersion = $value;
                 };
-            }
+            };
 
             /**
              * If current version is different form latest in database create  release version, 
@@ -261,30 +267,35 @@ class IndexController extends Controller
     }
 
     private function _findDirsAndFiles (array $files, $dirs, $namespace) {
-        foreach( $files as $value) {
-            $arrayValue = explode('/', $value);
-            if(count($arrayValue) > 1) {
-                $dirs[$namespace][$arrayValue[0]][] = $arrayValue[1];
-                $arrayValue = explode('/', $arrayValue[1]);
-                if(count($arrayValue) > 1) {
-                    $this->_findDirsAndFiles ($files, $dirs, $arrayValue[1]);
+        $array = array();
+        foreach ($files as $path) {
+            $list = explode('/', $path);
+            $n = count($list);
+
+            $arrayRef = &$array; // start from the root
+            for ($i = 0; $i < $n; $i++) {
+                $key = $list[$i];
+                if ($i == ($n-1)) {
+                    $arrayRef = &$arrayRef;
+                    $arrayRef[] = $key;
+                    ksort($arrayRef);
+                } else {
+                    $arrayRef = &$arrayRef[$key]; // index into the next level
                 }
-            } else {
-                $dirs[$namespace][] = $value;
             }
         }
 
-        return $dirs;
+        return array('/' => $array);
     }
 
-    private function _loadFileContentFromGithub($componentFilesValue, $url, $componentFilesValueKey) {
+    private function _loadFileContentFromGithub($componentFilesValue, $url) {
         $ch = curl_init();
         $url = $url;
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
-        $componentFilesValue[$componentFilesValueKey] = $packageFile['content'];
+        $componentFilesValue[] = $packageFile['content'];
 
         return $componentFilesValue;
     }
@@ -300,10 +311,9 @@ class IndexController extends Controller
                 $packageFile = ArrayService::objectToArray(json_decode(curl_exec($ch)));
                 $dirData = $packageFile['tree'];
                 $componentFilesValue = $this->_getFilesFromDirs($componentFilesValue, $dirData, $dirs[$element['path']], $element['path']);
-            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {$componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url'], array_search($element['path'], $dirs));
+            } else if($element['type'] == 'blob' && in_array($element['path'], $dirs)) {$componentFilesValue = $this->_loadFileContentFromGithub($componentFilesValue, $element['url']);
             }
         };
-        ksort($componentFilesValue);
         return $componentFilesValue;
     }
 
@@ -367,6 +377,11 @@ class IndexController extends Controller
     {
         $em = $this->getDoctrine()->getEntityManager();
         $component = $em->getRepository('FWMCraftyComponentsBundle:Components')->getOneWithVersions($id)->getArrayResult();
+
+        if(count($component) == 0) {
+            throw $this->createNotFoundException();
+        }
+
         $component  = $component[0];
 
         return array(

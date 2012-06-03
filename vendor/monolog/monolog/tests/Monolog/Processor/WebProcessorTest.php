@@ -21,12 +21,17 @@ class WebProcessorTest extends TestCase
             'REQUEST_URI'    => 'A',
             'REMOTE_ADDR'    => 'B',
             'REQUEST_METHOD' => 'C',
+            'HTTP_REFERER'   => 'D',
+            'SERVER_NAME'    => 'F',
         );
+
         $processor = new WebProcessor($server);
         $record = $processor($this->getRecord());
         $this->assertEquals($server['REQUEST_URI'], $record['extra']['url']);
         $this->assertEquals($server['REMOTE_ADDR'], $record['extra']['ip']);
         $this->assertEquals($server['REQUEST_METHOD'], $record['extra']['http_method']);
+        $this->assertEquals($server['HTTP_REFERER'], $record['extra']['referrer']);
+        $this->assertEquals($server['SERVER_NAME'], $record['extra']['server']);
     }
 
     public function testProcessorDoNothingIfNoRequestUri()
@@ -38,6 +43,19 @@ class WebProcessorTest extends TestCase
         $processor = new WebProcessor($server);
         $record = $processor($this->getRecord());
         $this->assertEmpty($record['extra']);
+    }
+
+    public function testProcessorReturnNullIfNoHttpReferer()
+    {
+        $server = array(
+            'REQUEST_URI'    => 'A',
+            'REMOTE_ADDR'    => 'B',
+            'REQUEST_METHOD' => 'C',
+            'SERVER_NAME'    => 'F',
+        );
+        $processor = new WebProcessor($server);
+        $record = $processor($this->getRecord());
+        $this->assertNull($record['extra']['referrer']);
     }
 
     /**

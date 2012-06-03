@@ -34,7 +34,7 @@ class XmlDumper extends Dumper
     /**
      * Dumps the service container as an XML string.
      *
-     * @param  array  $options An array of options
+     * @param array $options An array of options
      *
      * @return string An xml string representing of the service container
      *
@@ -85,7 +85,7 @@ class XmlDumper extends Dumper
     /**
      * Adds method calls.
      *
-     * @param array $methodcalls
+     * @param array      $methodcalls
      * @param DOMElement $parent
      *
      * @return void
@@ -106,7 +106,7 @@ class XmlDumper extends Dumper
      * Adds a service.
      *
      * @param Definition $definition
-     * @param string $id
+     * @param string     $id
      * @param DOMElement $parent
      *
      * @return void
@@ -177,8 +177,8 @@ class XmlDumper extends Dumper
     /**
      * Adds a service alias.
      *
-     * @param string $alias
-     * @param string $id
+     * @param string     $alias
+     * @param string     $id
      * @param DOMElement $parent
      *
      * @return void

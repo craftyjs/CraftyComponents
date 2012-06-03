@@ -60,6 +60,8 @@ You can also load and render the template in one fell swoop::
 
     echo $twig->render('index.html', array('the' => 'variables', 'go' => 'here'));
 
+.. _environment_options:
+
 Environment Options
 -------------------
 
@@ -93,7 +95,10 @@ The following options are available:
   exception instead (default to ``false``).
 
 * ``autoescape``: If set to ``true``, auto-escaping will be enabled by default
-  for all templates (default to ``true``).
+  for all templates (default to ``true``). As of Twig 1.8, you can set the
+  escaping strategy to use (``html``, ``js``, ``false`` to disable, or a PHP
+  callback that takes the template "filename" and must return the escaping
+  strategy to use).
 
 * ``optimizations``: A flag that indicates which optimizations to apply
   (default to ``-1`` -- all optimizations are enabled; set it to ``0`` to
@@ -309,7 +314,7 @@ Escaper Extension
 ~~~~~~~~~~~~~~~~~
 
 The ``escaper`` extension adds automatic output escaping to Twig. It defines a
-new tag, ``autoescape``, and a new filter, ``raw``.
+tag, ``autoescape``, and a filter, ``raw``.
 
 When creating the escaper extension, you can switch on or off the global
 output escaping strategy::
@@ -317,21 +322,23 @@ output escaping strategy::
     $escaper = new Twig_Extension_Escaper(true);
     $twig->addExtension($escaper);
 
-If set to ``true``, all variables in templates are escaped, except those using
-the ``raw`` filter:
+If set to ``true``, all variables in templates are escaped (using the ``html``
+escaping strategy), except those using the ``raw`` filter:
 
 .. code-block:: jinja
 
     {{ article.to_html|raw }}
 
-You can also change the escaping mode locally by using the ``autoescape`` tag:
+You can also change the escaping mode locally by using the ``autoescape`` tag
+(see the :doc:`autoescape<tags/autoescape>` doc for the syntax used before
+Twig 1.8):
 
 .. code-block:: jinja
 
-    {% autoescape true %}
-      {% var %}
-      {% var|raw %}     {# var won't be escaped #}
-      {% var|escape %}   {# var won't be doubled-escaped #}
+    {% autoescape 'html' %}
+        {{ var }}
+        {{ var|raw }}      {# var won't be escaped #}
+        {{ var|escape }}   {# var won't be double-escaped #}
     {% endautoescape %}
 
 .. warning::

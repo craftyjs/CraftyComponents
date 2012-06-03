@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2012 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -157,22 +157,6 @@ class AssetFactoryTest extends \PHPUnit_Framework_TestCase
 
         $this->factory->addWorker($worker);
         $this->factory->createAsset(array('foo.js', 'bar.js'));
-    }
-
-    public function testWorkerReturn()
-    {
-        $worker = $this->getMock('Assetic\\Factory\\Worker\\WorkerInterface');
-        $asset = $this->getMock('Assetic\\Asset\\AssetInterface');
-
-        $worker->expects($this->at(2))
-            ->method('process')
-            ->with($this->isInstanceOf('Assetic\\Asset\\AssetCollectionInterface'))
-            ->will($this->returnValue($asset));
-
-        $this->factory->addWorker($worker);
-        $coll = $this->factory->createAsset(array('foo.js', 'bar.js'));
-
-        $this->assertEquals(1, count(iterator_to_array($coll)));
     }
 
     public function testNestedFormula()

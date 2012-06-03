@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2012 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -46,7 +46,7 @@ class LessFilter implements FilterInterface
     {
         static $format = <<<'EOF'
 var less = require('less');
-var sys  = require('sys');
+var sys  = require(process.binding('natives').util ? 'util' : 'sys');
 
 new(less.Parser)(%s).parse(%s, function(e, tree) {
     if (e) {

@@ -99,7 +99,7 @@ abstract class AbstractDoctrineExtension extends Extension
      *
      * Aliases can be used in the Query languages of all the Doctrine object managers to simplify writing tasks.
      *
-     * @param array $mappingConfig
+     * @param array  $mappingConfig
      * @param string $mappingName
      * @return void
      */

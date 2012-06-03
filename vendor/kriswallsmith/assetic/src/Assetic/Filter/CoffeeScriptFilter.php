@@ -3,7 +3,7 @@
 /*
  * This file is part of the Assetic package, an OpenSky project.
  *
- * (c) 2010-2011 OpenSky Project Inc
+ * (c) 2010-2012 OpenSky Project Inc
  *
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
@@ -25,18 +25,10 @@ class CoffeeScriptFilter implements FilterInterface
     private $coffeePath;
     private $nodePath;
 
-    // coffee options
-    private $bare;
-
     public function __construct($coffeePath = '/usr/bin/coffee', $nodePath = '/usr/bin/node')
     {
         $this->coffeePath = $coffeePath;
         $this->nodePath = $nodePath;
-    }
-
-    public function setBare($bare)
-    {
-        $this->bare = $bare;
     }
 
     public function filterLoad(AssetInterface $asset)
@@ -48,13 +40,9 @@ class CoffeeScriptFilter implements FilterInterface
             $this->nodePath,
             $this->coffeePath,
             '-cp',
+            $input,
         ));
 
-        if ($this->bare) {
-            $pb->add('--bare');
-        }
-
-        $pb->add($input);
         $proc = $pb->getProcess();
         $code = $proc->run();
         unlink($input);

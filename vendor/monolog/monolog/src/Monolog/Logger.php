@@ -37,7 +37,7 @@ class Logger
     const INFO = 200;
 
     /**
-     * Exceptional occurences that are not errors
+     * Exceptional occurrences that are not errors
      *
      * Examples: Use of deprecated APIs, poor use of an API,
      * undesirable things that are not necessarily wrong.
@@ -101,7 +101,7 @@ class Logger
     }
 
     /**
-     * Pushes an handler on the stack.
+     * Pushes a handler on to the stack.
      *
      * @param HandlerInterface $handler
      */
@@ -111,7 +111,7 @@ class Logger
     }
 
     /**
-     * Pops an handler from the stack
+     * Pops a handler from the stack
      *
      * @return HandlerInterface
      */
@@ -124,7 +124,7 @@ class Logger
     }
 
     /**
-     * Adds a processor in the stack.
+     * Adds a processor on to the stack.
      *
      * @param callable $callback
      */
@@ -168,7 +168,7 @@ class Logger
             'level' => $level,
             'level_name' => self::getLevelName($level),
             'channel' => $this->name,
-            'datetime' => new \DateTime(),
+            'datetime' => \DateTime::createFromFormat('U.u', sprintf('%.6F', microtime(true))),
             'extra' => array(),
         );
         // check if any message will handle this message
@@ -276,6 +276,33 @@ class Logger
     public static function getLevelName($level)
     {
         return self::$levels[$level];
+    }
+
+    /**
+     * Checks whether the Logger has a handler that listens on the given level
+     *
+     * @param integer $level
+     * @return Boolean
+     */
+    public function isHandling($level)
+    {
+        $record = array(
+            'message' => '',
+            'context' => array(),
+            'level' => $level,
+            'level_name' => self::getLevelName($level),
+            'channel' => $this->name,
+            'datetime' => new \DateTime(),
+            'extra' => array(),
+        );
+
+        foreach ($this->handlers as $key => $handler) {
+            if ($handler->isHandling($record)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // ZF Logger Compat

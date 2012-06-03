@@ -26,6 +26,7 @@ use Symfony\Component\Routing\RequestContext;
 class UrlMatcher implements UrlMatcherInterface
 {
     protected $context;
+    protected $allow;
 
     private $routes;
 
@@ -68,7 +69,7 @@ class UrlMatcher implements UrlMatcherInterface
     /**
      * Tries to match a URL with a set of routes.
      *
-     * @param  string $pathinfo The path info to be parsed
+     * @param string $pathinfo The path info to be parsed
      *
      * @return array An array of parameters
      *
