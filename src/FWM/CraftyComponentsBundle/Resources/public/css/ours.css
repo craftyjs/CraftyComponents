@@ -1,4 +1,4 @@
-
+.topbar {top: 39px; z-index: 998; position: absolute;}
 .clear, .clearfix {clear: both;}
 pre.print{
 	background-color: #FEFBF3;

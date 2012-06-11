@@ -8,32 +8,40 @@
     <div class="hero-unit">
         <h1 class="title">Crafty DebugBar  <small>by Fly With Monkey</small></h1>
         <div class="desc">With Crafty DebugBar you can create your games faster.</div>
+        <img alt="Crafty DebugBar preview" src="http://dl.dropbox.com/u/141331/debugbar.PNG" />
         <div class="options" style="margin-top:20px">
-            <a href="https://github.com/ahilles107/CraftyBoilerplate" class="btn primary more">See sample project on Github</a>
+            <a href="http://craftycomponents.com/components/single/2/crafty-debug-bar" class="btn primary more">Get latest release now!</a>
         </div>
     </div>
     
     <div class="boilerplate">
-        <h2>Overview</h2>
-        <p>What we will use in CraftyBoilerplate:
+        <h2>What You can do with Crafty DebugBar?</h2>
         <ul>
-            <li>Crafty</li>
-            <li>Modernizr</li>
-            <li>Backbone</li>
-            <li>Underscore</li>
-            <li>RequireJquery</li>
+            <li>View human readable entities list</li>
+            <li>Change attributes for choosen entity</li>
+            <li>Manage entity (add/remove) components</li>
+            <li>Easly print entity object in browser console</li>
+            <li>Show/hide entity</li>
+            <li>Make entity draggable, move entity and read new position atributes</li>
+            <li>Show loaded assets</li>
         </ul>
 
-        <p>To clean up the code and files, in this case we need to use backbone.js as wrapper for entities and require.js for loading files when requests.</p>
-
-        <h2>Directories and default files</h2>
-
-    <h2>Read more</h2>
-    <ul>
-        <li><a href="http://documentcloud.github.com/backbone/">Backbone</a></li>
-        <li><a href="http://requirejs.org/">Require</a></li>
-        <li><a href="https://github.com/ahilles107/CraftyBoilerplate">Sample project repository</a></li>
-    </ul>
+        <h2>How You can use this?</h2>
+        <pre class="code">
+Crafty.modules({ 'crafty-debug-bar': 'release' }, function () {
+    Crafty.debugBar.show();
+});</pre>
+        
+        <h2>What will come?</h2>
+        <ul>
+            <li>entities selector (like in firebug)</li>
+            <li>easy show entity hitboxes polygons</li>
+            <li>performance grap (entities number, draw time)</li>
+            <li>pause/play, frames forward</li>
+            <li>current browser information, browser support</li>
+            <li>loaded assets (images, sounds)</li>
+            <li>sprites management</li>
+        </ul>
 
     <h2>Complete the game!</h2>
     <div id="flexpi-box" class="hero-unit" style="width: auto">
