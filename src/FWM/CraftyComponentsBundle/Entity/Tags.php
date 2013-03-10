@@ -32,7 +32,7 @@ class Tags
     /**
      * @var string $component
      *
-     * @ORM\ManyToOne(targetEntity="Components")
+     * @ORM\ManyToOne(targetEntity="Components", inversedBy="tags")
      * @ORM\JoinColumn(name="component_id", referencedColumnName="id", nullable=false)
      */
     protected $component;

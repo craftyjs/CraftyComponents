@@ -39,7 +39,7 @@ class Versions
     /**
      * @var string $file_content
      *
-     * @ORM\Column(name="file_content", type="text", length=255, nullable="true")
+     * @ORM\Column(name="file_content", type="text", length=255, nullable=true)
      */
     private $file_content;
 
@@ -60,7 +60,7 @@ class Versions
     /**
      * @var string $component
      *
-     * @ORM\ManyToOne(targetEntity="Components")
+     * @ORM\ManyToOne(targetEntity="Components", inversedBy="versions")
      * @ORM\JoinColumn(name="component_id", referencedColumnName="id", nullable=false)
      */
     protected $component;
@@ -157,7 +157,7 @@ class Versions
     }
     
     /**
-     * @ORM\prePersist
+     * @ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
@@ -165,7 +165,7 @@ class Versions
     }
 
     /**
-     * @ORM\prePersist
+     * @ORM\PrePersist
      */
     public function setIsActiveValue()
     {

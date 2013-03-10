@@ -1,20 +1,20 @@
 imports:
-    - { resource: parameters.ini }
+    - { resource: parameters.yml }
     - { resource: security.yml }
 
 framework:
     #esi:             ~
     translator:      ~
     secret:          %secret%
-    charset:         UTF-8
-    router:          { resource: "%kernel.root_dir%/config/routing.yml" }
+    router:          
+        resource: "%kernel.root_dir%/config/routing.yml"
+        strict_requirements: %kernel.debug%
     form:            true
     csrf_protection: true
     validation:      { enable_annotations: true }
     templating:      { engines: ['twig'] } #assets_version: SomeVersionScheme
-    session:
-        default_locale: %locale%
-        auto_start:     true
+    default_locale:  %locale%
+    session: ~
 
 # Twig Configuration
 twig:
@@ -24,6 +24,7 @@ twig:
 # Assetic Configuration
 assetic:
     debug:          %kernel.debug%
+    bundles: []
     use_controller: false
     # java: /usr/bin/java
     filters:
@@ -50,14 +51,11 @@ doctrine:
 
 # Swiftmailer Configuration
 swiftmailer:
+    spool: { type: memory }
     transport: %mailer_transport%
     host:      %mailer_host%
     username:  %mailer_user%
     password:  %mailer_password%
-
-jms_security_extra:
-    secure_controllers:  true
-    secure_all_services: false
 
 services:
     services.twig.extension:
@@ -73,8 +71,18 @@ services:
        tags:
            - { name: twig.extension }
 
+knp_paginator:
+    page_range: 5                      # default page range used in pagination control
+    default_options:
+        page_name: page                # page query parameter name
+        sort_field_name: sort          # sort field query parameter name
+        sort_direction_name: direction # sort direction query parameter name
+        distinct: true                 # ensure distinct results, useful when ORM queries are using GROUP BY statements
+    template:
+        pagination: ::pagination.html.twig     # sliding pagination controls template
+        sortable: KnpPaginatorBundle:Pagination:sortable_link.html.twig # sort link template
+
 parameters:
-    knp_paginator.template.pagination: ::pagination.html.twig
     fwm_crafty_components:
         crafty:
-            id: 8
+            id: 1

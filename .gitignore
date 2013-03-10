@@ -1,7 +1,10 @@
-app/cache/*
-app/logs/*
-composer.phar
-composer.lock
-web/uploads/*
-app/config/parameters.ini
-app/config/deploy.rb
+/web/uploads/*
+/app/config/deploy.rb
+/web/bundles/
+/app/bootstrap.php.cache
+/app/cache/*
+/app/logs/*
+/build/
+/vendor/
+/bin/
+/composer.phar

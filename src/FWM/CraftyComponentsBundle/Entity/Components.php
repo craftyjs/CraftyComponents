@@ -89,7 +89,7 @@ class Components
     /**
      * @var string $jsfiddle
      *
-     * @ORM\Column(name="jsfiddle", type="string", length=255, nullable="true")
+     * @ORM\Column(name="jsfiddle", type="string", length=255, nullable=true)
      */
     private $jsfiddle;
 
@@ -344,7 +344,7 @@ class Components
     }
 
     /**
-     * @ORM\prePersist
+     * @ORM\PrePersist
      */
     public function setCreatedAtValue()
     {
@@ -352,7 +352,7 @@ class Components
     }
 
     /**
-     * @ORM\prePersist
+     * @ORM\PrePersist
      */
     public function setIsActiveValue()
     {

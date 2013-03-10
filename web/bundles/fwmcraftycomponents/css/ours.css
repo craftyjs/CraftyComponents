@@ -1,8 +1,13 @@
-
-.clear {clear: both;}
+.topbar {top: 39px; z-index: 998; position: absolute;}
+.clear, .clearfix {clear: both;}
 pre.print{
 	background-color: #FEFBF3;
 	padding: 15px;
+}
+
+h1 small {
+	display: block;
+	margin: 10px;
 }
 
 .text-center {text-align: center;}
@@ -12,6 +17,7 @@ pre.print{
 	padding-top: 73px;
 }
 .container > footer p {text-align: left;}
+.container .pagination {margin: 0 auto;}
 
 
 .container .single-component-view .component-data{margin-right: 20px;}
@@ -19,3 +25,22 @@ pre.print{
 
 .container .add-new .post-receive .one {margin-bottom: 10px; margin-top: 10px;}
 .container .add-new .post-receive .two {width: 750px;}
+
+.container .component-data .homepage{margin-top: 10px;}
+.container .flywithmonkey a {padding: 0px}
+
+.content #crafty-box {height: 220px;}
+.content #crafty-box .title {}
+.content #crafty-box .desc{margin-bottom: 10px;}
+.content #crafty-box .homepage{margin-bottom: 15px;}
+.content #crafty-box .options{}
+.content #crafty-box .options a.more {margin-right: 10px;}
+.content #crafty-box .options span.release{margin-left: 20px;}
+
+.content #flexpi-box { margin: 0px 0px 20px 20px; width: 280px; height: 220px;}
+.content #flexpi-box img.flexpi-logo {width: 140px; height: 55px;}
+.content #flexpi-box .desc{margin-bottom: 10px;}
+.content #flexpi-box .homepage{margin-bottom: 15px;}
+.content #flexpi-box .options{}
+.content #flexpi-box .options a.more {margin-right: 10px;}
+.content #flexpi-box .options span.release{margin-left: 20px;}

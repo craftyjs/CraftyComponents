@@ -24,7 +24,7 @@ assetic:
 
 doctrine:
     dbal:
-        driver:   pdo_pgsql
+        driver:   pdo_mysql
         dbname:   fwmlabs
         user:     dev
         password: dev
@@ -32,4 +32,4 @@ doctrine:
 parameters:
     fwm_crafty_components:
         crafty:
-            id: 58
+            id: 1

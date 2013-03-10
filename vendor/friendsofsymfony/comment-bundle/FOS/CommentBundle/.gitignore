@@ -1,6 +1,0 @@
-composer.phar
-phpunit.xml
-Tests/autoload.php
-Tests/Functional/app/Behat/nginx.conf
-Tests/Functional/web/bundles
-vendor

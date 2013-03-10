@@ -44,7 +44,7 @@ class IndexController extends Controller
 
             $component = $this->_serveUpdateRequest($request, $repoUrl, $repoData);
             
-            $em = $this->getDoctrine()->getEntityManager();
+            $em = $this->getDoctrine()->getManager();
             $component = $em->getRepository('FWMCraftyComponentsBundle:Components')
                 ->getOneWithVersions($component->getId())
                 ->getArrayResult();
@@ -80,7 +80,7 @@ class IndexController extends Controller
             return array(
                 'component' => false,
                 'errors' => array(
-                    0 => 'This repository address ('.$url.') is invalid.'
+                    0 => 'This repository address ('.$repoUrl.') is invalid.'
                 )
             );
         }
@@ -136,7 +136,7 @@ class IndexController extends Controller
             'componentFilesValue'   => json_encode($componentFilesValue)
         );
 
-        $em                     = $this->getDoctrine()->getEntityManager();
+        $em                     = $this->getDoctrine()->getManager();
         $componentRepository    = $em->getRepository('FWMCraftyComponentsBundle:Components');
         $versionsRepository     = $em->getRepository('FWMCraftyComponentsBundle:Versions');
         $tagsRepository         = $em->getRepository('FWMCraftyComponentsBundle:Tags');
@@ -331,7 +331,7 @@ class IndexController extends Controller
      */
     public function listAction()
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $craftyComponentsConfig = $this->container->getParameter('fwm_crafty_components');
         $components = $em->getRepository('FWMCraftyComponentsBundle:Components')->getNew($craftyComponentsConfig);
 
@@ -381,7 +381,7 @@ class IndexController extends Controller
      */
     public function singleAction($id)
     {
-        $em = $this->getDoctrine()->getEntityManager();
+        $em = $this->getDoctrine()->getManager();
         $component = $em->getRepository('FWMCraftyComponentsBundle:Components')->getOneWithVersions($id)->getArrayResult();
 
         if(count($component) == 0) {

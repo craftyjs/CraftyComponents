@@ -87,7 +87,6 @@
   </head>
 
   <body>
-    <script type="text/javascript" src="http://flywithmonkey.com/bundles/fwmpage/js/network.js"></script>
     {% block topbar %}
     <div class="topbar">
       <div class="fill">
@@ -96,9 +95,9 @@
             <img src="/bundles/fwmcraftycomponents/images/craftycomponents-logo.png" alt="Components for Crafty.js html5 game engine - powered by Fly With Monkey." style="width: 300px; padding: 4px 15px 2px 15px;"/>
           </a>
           <ul class="nav">
-            <li class="flywithmonkey" style="padding: 15px 10px 15px;"><a href="{{ path('fwm_crafty_components_add_new') }}">Submit new component</a></li>
-            <li class="flywithmonkey" style="padding: 15px 10px 15px;"><a href="{{ path('fwm_crafty_boilerplate') }}">CraftyBoilerplate</a></li>
-            <li class="flywithmonkey" style="padding: 15px 10px 15px;"><a href="{{ path('fwm_crafty_debugbar') }}">Crafty DebugBar</a></li>
+            <li class="flywithmonkey" style="padding: 5px 10px;"><a href="{{ path('fwm_crafty_components_add_new') }}">Submit new component</a></li>
+            <li class="flywithmonkey" style="padding: 5px 10px;"><a href="{{ path('fwm_crafty_boilerplate') }}">CraftyBoilerplate</a></li>
+            <li class="flywithmonkey" style="padding: 5px 10px;"><a href="{{ path('fwm_crafty_debugbar') }}">Crafty DebugBar</a></li>
           </ul>
         </div>
       </div>
@@ -126,7 +125,7 @@
 
       {% block footer %}
       <footer>
-        <a href="http://flywithmonkey.com" title="HTML5 apps and games development"><p>&copy; Fly With Monkey {{ date()|date('Y')}}</p></a>
+        <p>&copy; Paweł Mikołajczuk {{ date()|date('Y')}}</p>
       </footer>
       {% endblock %}
 
