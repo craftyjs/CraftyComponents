@@ -43,6 +43,11 @@ class IndexController extends Controller
             }
 
             $component = $this->_serveUpdateRequest($request, $repoUrl, $repoData);
+
+            if (!is_object($component)) {
+                print_r($component);
+                return array('component' => false);
+            }
             
             $em = $this->getDoctrine()->getManager();
             $component = $em->getRepository('FWMCraftyComponentsBundle:Components')
@@ -63,7 +68,7 @@ class IndexController extends Controller
             $repoUrl = 'https://api.github.com/repos/'.$repoData['repoOwner'].'/'.$repoData['repoName'].'/git/trees/'.$branch;
         }
 
-        return $repoUrl;
+        return $repoUrl.'?client_id=9ca1f53d71a5cc56d34a&client_secret=b84b83787dd6114f755acafaa2821eb56912cefd';
     }
 
     private function _serveUpdateRequest($request, $repoUrl, $repoData, $branch = false) {
@@ -90,7 +95,7 @@ class IndexController extends Controller
             $element = $value;
             if($element['path'] == 'package.json') {
                 $ch     = curl_init();
-                $url    = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/blobs/'.$element['sha'];
+                $url    = 'https://api.github.com/repos/'.$repoOwner.'/'.$repoName.'/git/blobs/'.$element['sha'].'?client_id=9ca1f53d71a5cc56d34a&client_secret=b84b83787dd6114f755acafaa2821eb56912cefd';
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_HEADER, false);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -292,7 +297,7 @@ class IndexController extends Controller
 
     private function _loadFileContentFromGithub($componentFilesValue, $url, $key) {
         $ch = curl_init();
-        $url = $url;
+        $url = $url.'?client_id=9ca1f53d71a5cc56d34a&client_secret=b84b83787dd6114f755acafaa2821eb56912cefd';
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -308,7 +313,7 @@ class IndexController extends Controller
         foreach( $data as $key => $element){
             if($element['type'] == 'tree' && array_key_exists($element['path'], $dirs)) {
                 $ch = curl_init();
-                $url = $element['url'];
+                $url = $element['url'].'?client_id=9ca1f53d71a5cc56d34a&client_secret=b84b83787dd6114f755acafaa2821eb56912cefd';
                 curl_setopt($ch, CURLOPT_URL, $url);
                 curl_setopt($ch, CURLOPT_HEADER, false);
                 curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
