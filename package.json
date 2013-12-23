@@ -7,10 +7,14 @@
     "express": "~3.4.7",
     "jade": "~0.35.0"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "mocha": "~1.16.2",
+    "should": "~2.1.1",
+    "supertest": "~0.8.2"
+  },
   "scripts": {
     "start": "node app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha test/*"
   },
   "repository": {
     "type": "git",
