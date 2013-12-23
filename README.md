@@ -6,7 +6,7 @@ Maintained by [Giovanni Cappellotto](http://twitter.com/johnnyaboh).
 
 ## How does it work
 
-To get your component listed at [http://craftycomponents.com](http://craftycomponents.com) create a `component.json` at your project root following the standard described below and add a webhook in your repository to [http://craftycomponents.com/hooks/github](http://craftycomponents.com/hooks/github).
+To get your component listed at [http://craftycomponents.com](http://craftycomponents.com) create a `component.json` file at project's root following the standard described below and add a webhook in your repository to [http://craftycomponents.com/hooks/github](http://craftycomponents.com/hooks/github).
 
 ## `component.json`
 
@@ -41,10 +41,12 @@ The url to the project homepage.
 The `author` is one *person*. A *person* is an object with a `name` field and optionally `url` and `email`, like this:
 
 ```json
-"author": {
-  "name": "John Doe",
-  "email": "jd@example.com",
-  "url": "http://example.com/"
+{
+  "author": {
+    "name": "John Doe",
+    "email": "jd@example.com",
+    "url": "http://example.com/"
+  }
 }
 ```
 
@@ -63,12 +65,14 @@ You can check [the full list of SPDX license IDs](https://spdx.org/licenses/). I
 If you have more complex licensing terms, or you want to provide more detail in your component.json file, you can use the more verbose plural form, like this:
 
 ```json
-"licenses": [
-  {
-    "type": "MyLicense",
-    "url": "http://github.com/owner/project/path/to/license"
-  }
-]
+{
+  "licenses": [
+    {
+      "type": "MyLicense",
+      "url": "http://github.com/owner/project/path/to/license"
+    }
+  ]
+}
 ```
 
 It's also a good idea to include a license file at the top level in your package.
@@ -80,8 +84,10 @@ Specify the place where your code lives. This is helpful for people who want to 
 Example:
 
 ```json
-"repository": {
-  "type": "git",
-  "url": "http://github.com/owner/project.git"
+{
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/owner/project.git"
+  }
 }
 ```
