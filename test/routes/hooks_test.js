@@ -23,7 +23,7 @@ var examplePayload = {
   repository: { url: 'https://github.com/potomak/CraftyComponents' }
 };
 
-describe.only('hooks', function() {
+describe('hooks', function() {
   beforeEach(function(done) {
     Component.remove(function() {
       nock('https://api.github.com')
