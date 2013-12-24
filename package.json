@@ -35,6 +35,10 @@
     "videogame"
   ],
   "author": "Giovanni Cappellotto",
-  "license": "BSD",
-  "readmeFilename": "README.md"
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "subdomain": "crafty-components",
+  "engines": {
+    "node": "0.10.x"
+  }
 }
