@@ -1,14 +1,18 @@
-
-/**
- * Module dependencies.
- */
-
 var express = require('express');
 var routes = require('./routes');
 var user = require('./routes/user');
 var hooks = require('./routes/hooks');
 var http = require('http');
 var path = require('path');
+var mongoose = require('mongoose');
+
+mongoose.connect(process.env.MONGODB_URL || 'mongodb://localhost/crafty-components');
+
+var db = mongoose.connection;
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function() {
+  console.log('Connected to Mongodb');
+});
 
 var app = express();
 module.exports = app;
@@ -34,6 +38,6 @@ app.get('/', routes.index);
 app.get('/users', user.list);
 app.post('/hooks/github', hooks.github);
 
-http.createServer(app).listen(app.get('port'), function(){
+http.createServer(app).listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
 });
