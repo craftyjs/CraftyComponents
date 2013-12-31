@@ -1,0 +1,44 @@
+{
+  "name": "crafty-components",
+  "version": "0.0.1",
+  "description": "Crafty.js HTML5 game engine components directory",
+  "main": "index.js",
+  "dependencies": {
+    "express": "~3.4.7",
+    "jade": "~0.35.0",
+    "github-contents": "0.0.1",
+    "mongoose": "~3.8.3",
+    "mongoose-validator": "~0.2.2",
+    "semver": "~2.2.1"
+  },
+  "devDependencies": {
+    "mocha": "~1.16.2",
+    "should": "~2.1.1",
+    "supertest": "~0.8.2",
+    "nock": "~0.27.0"
+  },
+  "scripts": {
+    "start": "node app.js",
+    "test": "NODE_ENV=test ./node_modules/mocha/bin/mocha test/*"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/potomak/CraftyComponents.git"
+  },
+  "keywords": [
+    "crafty",
+    "craftyjs",
+    "components",
+    "directory",
+    "html5",
+    "game",
+    "videogame"
+  ],
+  "author": "Giovanni Cappellotto",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "subdomain": "crafty-components",
+  "engines": {
+    "node": "0.10.x"
+  }
+}

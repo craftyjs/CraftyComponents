@@ -1,0 +1,26 @@
+mixin component(component)
+  .component
+    h3= component.name
+    h4= 'Version ' + component.version
+    if component.description
+      p= component.description
+    if component.keywords
+      p
+        strong Keywords:&nbsp;
+        = component.keywords.join(', ')
+    if component.homepage
+      p
+        strong Homepage:&nbsp;
+        a(href=component.homepage)= component.homepage
+    if component.author
+      p
+        strong Author:&nbsp;
+        = component.author
+    if component.license
+      p
+        strong License:&nbsp;
+        = component.license
+    if component.repository
+      p
+        strong Repository:&nbsp;
+        a(href=component.repository)= component.repository

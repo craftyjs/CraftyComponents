@@ -1,0 +1,24 @@
+extends layout
+
+block content
+  p
+    | Welcome to Crafty Components. This is a directory for&nbsp;
+    a(href='http://craftyjs.com/') Crafty.js
+    | &nbsp;HTML5 game engine components.
+
+  h2 How does it work
+  p
+    | To get your component listed at&nbsp;
+    a(href='http://craftycomponents.com') http://craftycomponents.com
+    | &nbsp;create a <code>component.json</code> file at project's root following the standard described at&nbsp;
+    a(href='https://github.com/potomak/CraftyComponents#componentjson') https://github.com/potomak/CraftyComponents#componentjson
+    | &nbsp;and add a webhook in your repository to&nbsp;
+    a(href='http://craftycomponents.com/hooks/github') http://craftycomponents.com/hooks/github
+    | .
+
+  p
+    | There are already&nbsp;
+    = components.length
+    | &nbsp;components listed here.
+  p
+    a(href='/components') Go to index
